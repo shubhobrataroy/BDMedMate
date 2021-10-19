@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">BDMedMate - Indian Medicine to Bangladeshi Medicine</string>
+    <string name="title_activity_medicine_details">MedicineDetailsActivity</string>
+</resources>
