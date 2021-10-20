@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.shubhobrataroy.bdmedmate.data.bdDb.BDMedDatabase
+import com.shubhobrataroy.bdmedmate.data.bd.BDMedDatabase
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

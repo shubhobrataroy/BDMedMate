@@ -5,17 +5,18 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
+        android:name=".App"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BDMedMateIndianMedicineToBangladeshiMedicine">
         <activity
-            android:name=".presenter.MedicineDetailsActivity"
+            android:name=".presenter.view.MedicineDetailsActivity"
             android:exported="false"
             android:label="@string/title_activity_medicine_details"
             android:theme="@style/Theme.BDMedMateIndianMedicineToBangladeshiMedicine.NoActionBar" />
         <activity
-            android:name=".MainActivity"
+            android:name=".presenter.view.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.BDMedMateIndianMedicineToBangladeshiMedicine.NoActionBar">

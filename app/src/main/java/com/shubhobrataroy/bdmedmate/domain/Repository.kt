@@ -1,6 +1,9 @@
 package com.shubhobrataroy.bdmedmate.domain
 
-import com.shubhobrataroy.bdmedmate.data.bdDb.dao.BdMedDbDao
+import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 
-interface Repository:BdMedDbDao {
+interface Repository {
+    fun initialize()
+
+    suspend fun getAllMedicinesByCountry(country: Country) : List<Medicine>
 }
