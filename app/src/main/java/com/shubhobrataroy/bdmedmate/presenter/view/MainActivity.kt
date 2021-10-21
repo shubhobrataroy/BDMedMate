@@ -6,9 +6,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -29,6 +32,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
 @ExperimentalAnimationApi
+@ExperimentalFoundationApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -52,7 +56,71 @@ class MainActivity : ComponentActivity() {
     fun MedicineDataView(viewModel: MedicineListViewModel) {
         val state by viewModel.medListLiveData.observeAsState(CommonState.Idle)
 
-        MedicineListView(state)
+        MedicineListPage(medicineListState = state)
+    }
+
+
+    @Composable
+    fun SearchHeader() {
+        Card(
+            modifier = Modifier.padding(bottom = 16.dp),
+            elevation = 4.dp,
+            shape = RoundedCornerShape(bottomEnd = 16.dp, bottomStart = 16.dp)
+        ) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "Medicine", Modifier.fillMaxWidth())
+                OutlinedTextField(
+                    value = "", onValueChange = {},
+                    label = {
+                        Text("Search by Medicine Name")
+                    }, modifier = Modifier.fillMaxWidth(.95f)
+                )
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = "Order: ")
+                    Spacer(modifier = Modifier.width(4.dp))
+                    CustomRadioGroup(arrayOf("A to Z", "Z to A")) { value,index->
+                        viewModel.onMedicineOrderSelected(index)
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun MedicineListPage(medicineListState: CommonState<List<Medicine>>) {
+        Column {
+            SearchHeader()
+            when (medicineListState) {
+                is CommonState.Error -> Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Text(text = "List Fetching error " + medicineListState.exception.message)
+                }
+
+
+                CommonState.Fetching ->
+                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                        CircularProgressIndicator()
+                    }
+
+                is CommonState.Success ->
+                    MedicineListView(medicineListState = medicineListState)
+
+                CommonState.Idle -> Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Text(text = "Nothing Here")
+                }
+            }
+        }
     }
 
     @Composable
@@ -152,38 +220,22 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+
     @Composable
-    fun MedicineListView(medicineListState: CommonState<List<Medicine>>) {
-        when (medicineListState) {
-            is CommonState.Error -> Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Text(text = "List Fetching error " + medicineListState.exception.message)
-            }
-
-
-            CommonState.Fetching ->
-                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                    CircularProgressIndicator()
-                }
-            is CommonState.Success -> LazyColumn(
-
-                contentPadding = PaddingValues(
-                    vertical = 4.dp,
-                    horizontal = 8.dp
-                )
-            ) {
-                items(medicineListState.data.size) { index ->
-                    MedicineItemView(medicine = medicineListState.data[index])
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-            }
-            CommonState.Idle -> Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Text(text = "Nothing Here")
+    fun MedicineListView(
+        medicineListState: CommonState.Success<List<Medicine>>,
+        modifier: Modifier = Modifier
+    ) {
+        LazyColumn(
+            modifier = modifier,
+            contentPadding = PaddingValues(
+                vertical = 4.dp,
+                horizontal = 8.dp
+            )
+        ) {
+            items(medicineListState.data.size) { index ->
+                MedicineItemView(medicine = medicineListState.data[index])
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
@@ -199,8 +251,35 @@ class MainActivity : ComponentActivity() {
         }
 
         BDMedMateIndianMedicineToBangladeshiMedicineTheme {
-            MedicineListView(medicineListState = CommonState.Success(meds))
+            MedicineListPage(medicineListState = CommonState.Success(meds))
+//            SearchHeader()
         }
     }
 }
 
+
+@Composable
+fun CustomRadioGroup(options: Array<String>, onChanged: (value: String,index:Int) -> Unit) {
+
+    val selected = remember { mutableStateOf(options[0]) }
+
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .selectableGroup()) {
+        options.forEachIndexed  { index, value ->
+            Row(Modifier.clickable {
+                selected.value = value
+                onChanged(value,index)
+            }) {
+                RadioButton(selected = value == selected.value, onClick = null)
+                Text(
+                    text = value,
+                    style = MaterialTheme.typography.body1.merge(),
+                    modifier = Modifier.padding(start = 2.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+            }
+        }
+    }
+}

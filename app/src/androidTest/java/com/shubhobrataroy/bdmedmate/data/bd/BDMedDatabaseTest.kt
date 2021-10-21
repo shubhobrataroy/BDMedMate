@@ -32,7 +32,7 @@ class BDMedDatabaseTest : TestCase("BDDataSourceTest") {
     @Test
     fun testGetAllMedicines() {
         runBlocking {
-            db.getAllMedicines().let {
+            db.getAllMedicines(false).let {
                 assert(it.isNotEmpty()) {
                     commonEmptyListMsg
                 }
@@ -70,7 +70,7 @@ class BDMedDatabaseTest : TestCase("BDDataSourceTest") {
             val missingSimilarMedForMeds = ArrayList<String>()
             val missingGenericsForMeds = ArrayList<String>()
 
-            db.getAllMedicines().forEachIndexed { index, it ->
+            db.getAllMedicines(true).forEachIndexed { index, it ->
 
 
                 if (it.companyDetails() != null) {

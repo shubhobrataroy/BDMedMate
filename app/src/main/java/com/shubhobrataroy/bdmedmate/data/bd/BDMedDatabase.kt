@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.shubhobrataroy.bdmedmate.data.bd.dao.BdMedDbDao
 import com.shubhobrataroy.bdmedmate.data.bd.entity.*
 import com.shubhobrataroy.bdmedmate.domain.MedDataSource
@@ -30,8 +31,14 @@ abstract class BDMedDatabase : RoomDatabase(), MedDataSource {
 
     private val dao by lazy { getBDMedDao() }
 
-    override suspend fun getAllMedicines(): List<Medicine> {
-        return dao.getAllBrandData().map { it.toMedicine() }
+    override suspend fun getAllMedicines(byMedNameAsc: Boolean): List<Medicine> {
+        val orderLogic = buildString {
+            append("brand_name ")
+            append(if (byMedNameAsc) "asc" else "desc")
+        }
+
+        return dao.getAllBrandDataDynamicQuery(SimpleSQLiteQuery("select * from BRAND order by $orderLogic"))
+            .map { it.toMedicine() }
     }
 
     override suspend fun getAllGenerics(): List<MedGeneric> {

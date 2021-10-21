@@ -23,13 +23,15 @@ class MedicineListViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
 
+    private val country = Country.Bangladesh
+
     private val _medListLiveData = MutableLiveData<CommonState<List<Medicine>>>().apply {
         postValue(CommonState.Idle)
     }
     val medListLiveData: LiveData<CommonState<List<Medicine>>> = _medListLiveData
 
 
-    fun getMedicineList(country: Country = Country.Bangladesh) {
+    fun getMedicineList() {
         viewModelScope.launch(Dispatchers.IO) {
             _medListLiveData.execCatching {
                 repository.getAllMedicinesByCountry(country)
@@ -41,5 +43,14 @@ class MedicineListViewModel @Inject constructor(
         liveData(Dispatchers.IO) {
             emit(medicine.genericFetcher() to medicine.companyDetails())
         }
+
+    fun onMedicineOrderSelected(index: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _medListLiveData.execCatching {
+               val data = repository.getAllMedicinesByCountry(country,index ==0)
+                data
+            }
+        }
+    }
 
 }

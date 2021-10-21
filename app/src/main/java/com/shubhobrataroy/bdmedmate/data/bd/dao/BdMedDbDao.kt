@@ -3,13 +3,23 @@ package com.shubhobrataroy.bdmedmate.data.bd.dao
 import androidx.compose.ui.graphics.Outline
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.RawQuery
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.shubhobrataroy.bdmedmate.data.bd.entity.*
 
 @Dao
 interface BdMedDbDao {
 
     @Query("select * from BRAND order by brand_name asc")
-    fun getAllBrandData(): List<MedicineEntity>
+    fun getAllBrandData(
+    ): List<MedicineEntity>
+
+    @RawQuery
+    fun getAllBrandDataDynamicQuery(
+        query : SupportSQLiteQuery
+    ): List<MedicineEntity>
+
+
 
     @Query("select * from generic")
     fun getAllMedGenericsData(): List<MedGenericsEntity>
