@@ -5,5 +5,10 @@ package com.shubhobrataroy.bdmedmate.domain.model
  **/
 data class MedGeneric(
     val name: String,
-    val medicines:()-> List<Medicine> = { emptyList()}
+    val indication:String?=null,
+    val contraIndication:String?=null,
+    val dosage:String?=null,
+    val sideEffect:String?=null,
+    val medicines:()-> List<Medicine> = { emptyList()},
+
 )

@@ -11,21 +11,22 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.shubhobrataroy.bdmedmate.data.bd.entity.MedGenericsEntity
-import com.shubhobrataroy.bdmedmate.data.bd.entity.MedicineEntity
-import com.shubhobrataroy.bdmedmate.presenter.ui.theme.BDMedMateIndianMedicineToBangladeshiMedicineTheme
+import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
+import com.shubhobrataroy.bdmedmate.domain.model.Medicine
+import com.shubhobrataroy.bdmedmate.presenter.ui.theme.MedMateTheme
 
 class MedicineDetailsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            BDMedMateIndianMedicineToBangladeshiMedicineTheme {
+            MedMateTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
                     Greeting2("Android")
@@ -36,32 +37,36 @@ class MedicineDetailsActivity : ComponentActivity() {
 }
 
 @Composable
-fun MedicineDetails(medicineEntity: MedicineEntity, genericsEntity: MedGenericsEntity) {
-    Column(Modifier.fillMaxSize()) {
+fun MedicineDetails(medicineEntity: Medicine, genericsEntity: MedGeneric) {
+    Column(
+        Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(
-            text = medicineEntity.brandName ?: "",
+            text = medicineEntity.name,
             fontWeight = FontWeight.Bold
         )
 
-        if (genericsEntity.genericName != null)
-           Card(elevation = 3.dp,
-               modifier = Modifier.padding(2.dp)
-               ) {
-               Text(
-                   modifier = Modifier.padding(4.dp),
-                   text = genericsEntity.genericName ?: "",
-                   fontStyle = FontStyle.Italic,
-               )
-           }
-        if (medicineEntity.form != null)
+
+        Card(
+            elevation = 3.dp,
+            modifier = Modifier.padding(2.dp)
+        ) {
             Text(
-                text = medicineEntity.form ?: "",
+                modifier = Modifier.padding(4.dp),
+                text = genericsEntity.name,
+                fontStyle = FontStyle.Italic,
+            )
+        }
+        if (medicineEntity.type != null)
+            Text(
+                text = medicineEntity.type,
                 fontStyle = FontStyle.Italic,
                 fontSize = 12.sp
             )
 
         if (medicineEntity.strength != null)
-            Text(text = medicineEntity.strength ?: "")
+            Text(text = medicineEntity.strength)
 
 
     }
@@ -75,13 +80,12 @@ fun Greeting2(name: String) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview2() {
-    BDMedMateIndianMedicineToBangladeshiMedicineTheme {
+    MedMateTheme {
         MedicineDetails(
-            MedicineEntity(
-                "1", "2", "3",
-                "ABC Medicine", "Syrup", "250 mg", "20.0", "250"
+            Medicine(
+                "ABC Medicine", "Syrup","250 mg",
             ),
-            MedGenericsEntity("","Azythomucin")
+            MedGeneric("Azythomycin")
         )
     }
 }

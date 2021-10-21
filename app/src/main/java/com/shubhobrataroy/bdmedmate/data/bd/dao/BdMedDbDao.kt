@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Outline
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RawQuery
+import androidx.room.Transaction
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.shubhobrataroy.bdmedmate.data.bd.entity.*
 
@@ -47,4 +48,9 @@ interface BdMedDbDao {
 
     @Query("select * from BRAND where generic_id = :genericId and brand_id != :excludeMedId")
     fun getOtherSimilarMedicines(genericId: String, excludeMedId: String = "-1"): List<MedicineEntity>
+
+    @Query("select * from indication_generic_index where generic_id = :genericId")
+    fun getIndicationId(genericId: String) : GenericIndicationEntity?
+
+
 }

@@ -1,5 +1,6 @@
 package com.shubhobrataroy.bdmedmate.domain
 
+import androidx.lifecycle.LiveDataScope
 import androidx.lifecycle.MutableLiveData
 import com.shubhobrataroy.bdmedmate.presenter.CommonState
 import java.lang.Exception
@@ -9,14 +10,27 @@ import java.lang.Exception
  **/
 
 
-suspend fun <T : Any> MutableLiveData<CommonState<T>>.execCatching(task: suspend ()-> T)
-{
+suspend fun <T : Any> MutableLiveData<CommonState<T>>.execCatching(task: suspend () -> T): CommonState<T> {
     postValue(CommonState.Fetching)
 
-    try {
-        postValue(CommonState.Success(task()))
-    }catch (ex:Exception)
-    {
-        postValue(CommonState.Error(ex))
+    return try {
+        CommonState.Success(task()).apply {
+            postValue(this)
+        }
+
+    } catch (ex: Exception) {
+        CommonState.Error(ex).apply {
+            postValue(this)
+        }
     }
+}
+
+suspend fun <T : Any> LiveDataScope<CommonState<T>>.wrapWithState(task: suspend () -> T?) {
+    emit(CommonState.Fetching)
+
+    emit(
+        task().run {
+            if (this == null) CommonState.Error(NoSuchElementException())
+            else CommonState.Success(this)
+        })
 }

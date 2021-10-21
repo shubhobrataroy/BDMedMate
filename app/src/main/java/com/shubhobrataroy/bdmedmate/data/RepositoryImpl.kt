@@ -17,6 +17,10 @@ class RepositoryImpl @Inject constructor(countryWiseDataSources: Lazy<HashMap<Co
 
     }
 
-    override suspend fun getAllMedicinesByCountry(country: Country,byMedNameAsc:Boolean) =
-        countryWiseDataSources[country]?.getAllMedicines(byMedNameAsc) ?: emptyList()
+    override suspend fun getAllMedicinesByCountry(
+        searchQuery: String,
+        country: Country,
+        byMedNameAsc: Boolean
+    ) =
+        countryWiseDataSources[country]?.getAllMedicines(searchQuery, byMedNameAsc) ?: emptyList()
 }

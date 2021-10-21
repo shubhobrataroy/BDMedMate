@@ -7,7 +7,6 @@ import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,8 +23,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.fragment.app.FragmentActivity
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 import com.shubhobrataroy.bdmedmate.presenter.CommonState
+import com.shubhobrataroy.bdmedmate.presenter.ui.theme.CurrentColorPalette
+import com.shubhobrataroy.bdmedmate.presenter.ui.theme.MedMateTheme
 import com.shubhobrataroy.bdmedmate.presenter.viewmodel.MedicineListViewModel
 import com.shubhobrataroy.bdmedmate.ui.theme.BDMedMateIndianMedicineToBangladeshiMedicineTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,7 +36,7 @@ import java.util.*
 @ExperimentalAnimationApi
 @ExperimentalFoundationApi
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
 
     private val viewModel by viewModels<MedicineListViewModel>()
 
@@ -42,14 +44,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            BDMedMateIndianMedicineToBangladeshiMedicineTheme {
+            MedMateTheme {
                 Surface(color = MaterialTheme.colors.background) {
                     MedicineDataView(viewModel = viewModel)
                 }
             }
         }
 
-        viewModel.getMedicineList()
+        viewModel.fetchMedicineList()
     }
 
     @Composable
@@ -73,18 +75,29 @@ class MainActivity : ComponentActivity() {
                     .padding(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
                 Text(text = "Medicine", Modifier.fillMaxWidth())
+
+                val searchState = remember {
+                    viewModel.searchQueryState
+                }
                 OutlinedTextField(
-                    value = "", onValueChange = {},
+                    value = searchState.value, onValueChange = {
+                        viewModel.searchMedicine(it)
+                    },
                     label = {
                         Text("Search by Medicine Name")
                     }, modifier = Modifier.fillMaxWidth(.95f)
                 )
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     Text(text = "Order: ")
                     Spacer(modifier = Modifier.width(4.dp))
-                    CustomRadioGroup(arrayOf("A to Z", "Z to A")) { value,index->
+                    CustomRadioGroup(arrayOf("A to Z", "Z to A")) { value, index ->
                         viewModel.onMedicineOrderSelected(index)
                     }
                 }
@@ -105,10 +118,7 @@ class MainActivity : ComponentActivity() {
                 }
 
 
-                CommonState.Fetching ->
-                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                        CircularProgressIndicator()
-                    }
+                CommonState.Fetching -> CenterProgress()
 
                 is CommonState.Success ->
                     MedicineListView(medicineListState = medicineListState)
@@ -152,7 +162,7 @@ class MainActivity : ComponentActivity() {
                     text = extraData?.first?.name ?: "",
                     fontStyle = FontStyle.Italic,
                     fontWeight = FontWeight.Bold,
-                    color = Color.DarkGray
+                    color = CurrentColorPalette.secondary
                 )
 
             if (extraData?.second != null)
@@ -166,7 +176,16 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp),
-                onClick = { },
+                onClick = {
+                    val medicineDetailsFragment =
+                        MedicineDetailsFragment(
+                            viewModel,
+                            medicine,
+                            extraData?.first,
+                            extraData?.second
+                        )
+                    medicineDetailsFragment.show(supportFragmentManager,"Show")
+                },
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Text(text = "View Details")
@@ -201,13 +220,13 @@ class MainActivity : ComponentActivity() {
                             text = medicine.type,
                             fontSize = 14.sp,
                             modifier = Modifier.padding(start = 8.dp),
-                            color = Color.DarkGray
+                            color = CurrentColorPalette.secondary
                         )
                 }
                 if (medicine.strength != null)
                     Text(
                         text = medicine.strength,
-                        color = Color.DarkGray, fontSize = 12.sp
+                        color = CurrentColorPalette.secondary, fontSize = 12.sp
                     )
 
 
@@ -250,7 +269,7 @@ class MainActivity : ComponentActivity() {
                 add(med)
         }
 
-        BDMedMateIndianMedicineToBangladeshiMedicineTheme {
+        MedMateTheme {
             MedicineListPage(medicineListState = CommonState.Success(meds))
 //            SearchHeader()
         }
@@ -259,18 +278,27 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun CustomRadioGroup(options: Array<String>, onChanged: (value: String,index:Int) -> Unit) {
+fun CenterProgress()
+{
+    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+        CircularProgressIndicator()
+    }
+}
+
+@Composable
+fun CustomRadioGroup(options: Array<String>, onChanged: (value: String, index: Int) -> Unit) {
 
     val selected = remember { mutableStateOf(options[0]) }
 
     Row(
         Modifier
             .fillMaxWidth()
-            .selectableGroup()) {
-        options.forEachIndexed  { index, value ->
+            .selectableGroup()
+    ) {
+        options.forEachIndexed { index, value ->
             Row(Modifier.clickable {
                 selected.value = value
-                onChanged(value,index)
+                onChanged(value, index)
             }) {
                 RadioButton(selected = value == selected.value, onClick = null)
                 Text(

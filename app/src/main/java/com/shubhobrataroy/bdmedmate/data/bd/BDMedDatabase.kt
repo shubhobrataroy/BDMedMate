@@ -31,13 +31,21 @@ abstract class BDMedDatabase : RoomDatabase(), MedDataSource {
 
     private val dao by lazy { getBDMedDao() }
 
-    override suspend fun getAllMedicines(byMedNameAsc: Boolean): List<Medicine> {
+    override suspend fun getAllMedicines(
+        medSearchQuery: String,
+        byMedNameAsc: Boolean
+    ): List<Medicine> {
         val orderLogic = buildString {
             append("brand_name ")
             append(if (byMedNameAsc) "asc" else "desc")
         }
 
-        return dao.getAllBrandDataDynamicQuery(SimpleSQLiteQuery("select * from BRAND order by $orderLogic"))
+        val whereLogic = buildString {
+            append("brand_name like '%$medSearchQuery%'")
+            append(" COLLATE SQL_Latin1_General_CP1_CI_AS")
+        }
+
+        return dao.getAllBrandDataDynamicQuery(SimpleSQLiteQuery("select * from BRAND WHERE $whereLogic order by $orderLogic"))
             .map { it.toMedicine() }
     }
 
@@ -70,7 +78,13 @@ abstract class BDMedDatabase : RoomDatabase(), MedDataSource {
     }
 
     private fun MedGenericsEntity.toMedGeneric(): MedGeneric {
-        return MedGeneric(genericName ?: "") {
+        return MedGeneric(
+            genericName ?: "",
+            indication,
+            contraIndication = contraIndication,
+            dosage = dose,
+            sideEffect = sideEffect
+        ) {
             dao.getMedicinesGenericId(genericId).map { it.toMedicine() }
         }
     }

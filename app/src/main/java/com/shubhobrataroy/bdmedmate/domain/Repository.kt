@@ -5,5 +5,8 @@ import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 interface Repository {
     fun initialize()
 
-    suspend fun getAllMedicinesByCountry(country: Country,byMedNameAsc:Boolean = true,) : List<Medicine>
+    suspend fun getAllMedicinesByCountry(
+        searchQuery: String="",
+        country: Country,
+        byMedNameAsc: Boolean = true,) : List<Medicine>
 }

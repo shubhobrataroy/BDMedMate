@@ -8,4 +8,7 @@ sealed class CommonState<out T : Any> {
     object Idle : CommonState<Nothing>()
     data class Error(val exception: Exception) : CommonState<Nothing>()
     data class Success<out T : Any>(val data: T) : CommonState<T>()
+
+    fun isSuccess (): Boolean = this is CommonState.Success
 }
+
