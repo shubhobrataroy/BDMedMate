@@ -9,10 +9,13 @@ import androidx.room.ColumnInfo
 data class Medicine(
     var name: String,
 
-    val type: String?=null,
+    val type: String? = null,
 
     val strength: String? = null,
 
+    val genericName: String? = null,
+
+    val companyName: String? = null,
 
     val genericFetcher: suspend () -> MedGeneric? = { null },
 

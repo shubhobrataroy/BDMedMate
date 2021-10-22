@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.shubhobrataroy.bdmedmate.data.bd.dao.BdMedDbDao
 import com.shubhobrataroy.bdmedmate.data.bd.entity.*
+import com.shubhobrataroy.bdmedmate.data.bd.mapper.MedicineDetailed
 import com.shubhobrataroy.bdmedmate.domain.MedDataSource
 import com.shubhobrataroy.bdmedmate.domain.model.Company
 import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
@@ -57,16 +58,25 @@ abstract class BDMedDatabase : RoomDatabase(), MedDataSource {
         return dao.getAllCompanyData().map { it.toCompany() }
     }
 
-    private fun MedicineEntity.toMedicine(): Medicine {
+    private fun MedicineDetailed.toMedicine() = medicine.toMedicine(genericsEntity, companyEntity)
+
+    private fun MedicineEntity.toMedicine(
+        genericsEntity: MedGenericsEntity? = null,
+        companyEntity: CompanyEntity? = null
+    ): Medicine {
         return Medicine(brandName ?: "", form, strength,
+            genericName = genericsEntity?.genericName,
+            companyName = companyEntity?.companyName,
             genericFetcher = {
-                if (genericId == null) null
-                else
-                    dao.getGenericById(genericId).firstOrNull()?.toMedGeneric()
+                genericsEntity?.toMedGeneric()
+                    ?: if (genericId == null) null
+                    else
+                        dao.getGenericById(genericId).firstOrNull()?.toMedGeneric()
             },
             companyDetails = {
-                if (companyId == null) null
-                else dao.getCompanyDetailsByCompanyId(companyId).firstOrNull()?.toCompany()
+                companyEntity?.toCompany()
+                    ?: if (companyId == null) null
+                    else dao.getCompanyDetailsByCompanyId(companyId).firstOrNull()?.toCompany()
             },
             similarMedicines = {
                 if (genericId == null) emptyList()
@@ -76,6 +86,7 @@ abstract class BDMedDatabase : RoomDatabase(), MedDataSource {
             }
         )
     }
+
 
     private fun MedGenericsEntity.toMedGeneric(): MedGeneric {
         return MedGeneric(

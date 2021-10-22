@@ -141,32 +141,6 @@ class MainActivity : FragmentActivity() {
         if (extraData == null) return
 
         Column {
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(8.dp),
-            )
-            Divider(
-                Modifier
-                    .height(1.dp)
-                    .padding(horizontal = 8.dp)
-            )
-
-            Spacer(
-                modifier = Modifier
-                    .height(8.dp),
-            )
-
-            if (extraData?.first != null)
-                Text(
-                    text = extraData?.first?.name ?: "",
-                    fontStyle = FontStyle.Italic,
-                    fontWeight = FontWeight.Bold,
-                    color = CurrentColorPalette.secondary
-                )
-
-            if (extraData?.second != null)
-                Text(text = extraData?.second?.name ?: "")
 
             Spacer(
                 modifier = Modifier
@@ -184,7 +158,7 @@ class MainActivity : FragmentActivity() {
                             extraData?.first,
                             extraData?.second
                         )
-                    medicineDetailsFragment.show(supportFragmentManager,"Show")
+                    medicineDetailsFragment.show(supportFragmentManager, "Show")
                 },
                 shape = RoundedCornerShape(16.dp)
             ) {
@@ -228,6 +202,26 @@ class MainActivity : FragmentActivity() {
                         text = medicine.strength,
                         color = CurrentColorPalette.secondary, fontSize = 12.sp
                     )
+
+
+
+                if (medicine.genericName != null) {
+                    CommonDivider()
+                    Text(
+                        text = medicine.genericName,
+                        fontStyle = FontStyle.Italic,
+                        color = CurrentColorPalette.secondary
+                    )
+                }
+
+                if (medicine.companyName != null) {
+                    CommonDivider()
+                    Text(
+                        text = medicine.companyName,
+                        color = CurrentColorPalette.secondaryVariant,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
 
                 AnimatedVisibility(visible = clicked) {
@@ -278,8 +272,7 @@ class MainActivity : FragmentActivity() {
 
 
 @Composable
-fun CenterProgress()
-{
+fun CenterProgress() {
     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
         CircularProgressIndicator()
     }

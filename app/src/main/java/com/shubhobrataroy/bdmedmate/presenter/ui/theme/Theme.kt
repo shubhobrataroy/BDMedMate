@@ -11,12 +11,14 @@ private val DarkColorPalette = darkColors(
     primary = Purple200,
     primaryVariant = Purple700,
     secondary = Teal200,
+    secondaryVariant = Color.LightGray
 )
 
 private val LightColorPalette = lightColors(
     primary = Purple500,
     primaryVariant = Purple700,
-    secondary = Color.DarkGray
+    secondary = Color.DarkGray,
+    secondaryVariant = Color.DarkGray
 
     /* Other default colors to override
     background = Color.White,

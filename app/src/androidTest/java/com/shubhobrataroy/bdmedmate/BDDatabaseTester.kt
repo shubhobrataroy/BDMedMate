@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.shubhobrataroy.bdmedmate.data.bd.BDMedDatabase
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -60,6 +61,15 @@ class BDDatabaseTester {
 
 
 
-
+    @Test
+    fun testAllMedicineDetailsData()
+    {
+       runBlocking{
+           val detailedData = db.getAllMedicines()
+           assert(detailedData.isNotEmpty()) {
+               "Medicine data is empty"
+           }
+       }
+    }
 
 }
