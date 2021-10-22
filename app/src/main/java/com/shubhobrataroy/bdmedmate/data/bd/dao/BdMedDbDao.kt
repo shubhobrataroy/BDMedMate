@@ -42,8 +42,8 @@ interface BdMedDbDao {
     fun getGenericById(genericId: String): List<MedGenericsEntity>
 
 
-    @Query("select * from BRAND where generic_id = :genericId")
-    fun getMedicinesGenericId(genericId: String): List<MedicineEntity>
+    @Query("select * from BRAND where generic_id = :genericId and form like :form and strength like :strength")
+    fun getMedicinesGenericId(genericId: String,form:String="", strength:String=""): List<MedicineEntity>
 
 
     @Query("select * from BRAND where company_id = :companyId")

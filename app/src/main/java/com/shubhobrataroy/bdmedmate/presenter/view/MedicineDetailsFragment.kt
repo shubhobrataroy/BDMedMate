@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -113,7 +114,8 @@ class MedicineDetailsFragment : BottomSheetDialogFragment() {
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
                 .padding(horizontal = 6.dp),
-        ) {
+
+            ) {
             LazyColumn(
                 state = listState!!,
                 modifier = Modifier
@@ -198,18 +200,22 @@ class MedicineDetailsFragment : BottomSheetDialogFragment() {
     fun SimilarMedView(currentData: Medicine) {
         Card(
             elevation = 1.dp,
+            shape = RoundedCornerShape(16.dp),
+            border = BorderStroke(1.dp, CurrentColorPalette.primary),
             modifier = Modifier
                 .padding(horizontal = 4.dp, vertical = 8.dp)
                 .width(IntrinsicSize.Max)
                 .clickable {
-                    getInstance(currentData).show(childFragmentManager,currentData.name)
+                    getInstance(currentData).show(childFragmentManager, currentData.name)
                 }
         ) {
-            Text(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-                text = currentData.name + " ${currentData.strength ?: ""}",
-                fontStyle = FontStyle.Italic,
-            )
+            Column {
+                Text(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                    text = currentData.name + " ${currentData.strength ?: ""}",
+                    fontStyle = FontStyle.Italic,
+                )
+            }
         }
     }
 
@@ -246,10 +252,8 @@ class MedicineDetailsFragment : BottomSheetDialogFragment() {
         lazyListScope: LazyListScope
     ) {
 
-        when (val state = similarMeds.value) {
-            CommonState.Fetching -> CenterProgress()
-            is CommonState.Success ->
-                SimilarMedsListView(state.data, lazyListScope)
+        similarMeds.value?.toComposable {
+            SimilarMedsListView(it, lazyListScope)
         }
 
     }

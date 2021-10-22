@@ -81,7 +81,7 @@ abstract class BDMedDatabase : RoomDatabase(), MedDataSource {
             similarMedicines = {
                 if (genericId == null) emptyList()
                 else
-                    dao.getMedicinesGenericId(genericId)
+                    dao.getMedicinesGenericId(genericId,form?:"",strength = strength ?:"")
                         .map { it.toMedicine() }
             }
         )
