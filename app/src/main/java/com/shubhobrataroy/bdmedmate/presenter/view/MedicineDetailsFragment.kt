@@ -49,8 +49,7 @@ class MedicineDetailsFragment : BottomSheetDialogFragment() {
             if ((lastState == BottomSheetBehavior.STATE_EXPANDED &&
                         newState == BottomSheetBehavior.STATE_DRAGGING) ||
                 listState?.firstVisibleItemIndex ?: -1 != 0
-            )
-                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            ) behavior.state = BottomSheetBehavior.STATE_EXPANDED
 
 
             lastState = newState
@@ -203,7 +202,7 @@ class MedicineDetailsFragment : BottomSheetDialogFragment() {
                 .padding(horizontal = 4.dp, vertical = 8.dp)
                 .width(IntrinsicSize.Max)
                 .clickable {
-
+                    getInstance(currentData).show(childFragmentManager,currentData.name)
                 }
         ) {
             Text(
