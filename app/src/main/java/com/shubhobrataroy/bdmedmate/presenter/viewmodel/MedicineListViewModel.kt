@@ -5,6 +5,8 @@ import androidx.lifecycle.*
 import com.shubhobrataroy.bdmedmate.domain.Country
 import com.shubhobrataroy.bdmedmate.domain.Repository
 import com.shubhobrataroy.bdmedmate.domain.execCatching
+import com.shubhobrataroy.bdmedmate.domain.model.Company
+import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 import com.shubhobrataroy.bdmedmate.domain.wrapWithState
 import com.shubhobrataroy.bdmedmate.presenter.CommonState
@@ -50,7 +52,9 @@ class MedicineListViewModel @Inject constructor(
 
     fun getGenericsAndCompanyDetails(medicine: Medicine) =
         liveData(Dispatchers.IO) {
-            emit(medicine.genericFetcher() to medicine.companyDetails())
+            this.wrapWithState {
+                medicine.genericFetcher() to medicine.companyDetails()
+            }
         }
 
     fun onMedicineOrderSelected(index: Int) {

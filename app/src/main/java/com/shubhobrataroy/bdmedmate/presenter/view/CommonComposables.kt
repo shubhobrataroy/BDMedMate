@@ -10,6 +10,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
+import com.shubhobrataroy.bdmedmate.presenter.CommonState
 import com.shubhobrataroy.bdmedmate.presenter.ui.theme.CurrentColorPalette
 import com.shubhobrataroy.bdmedmate.presenter.ui.theme.MedMateTheme
 
@@ -76,11 +77,21 @@ fun MedGenericView(medGeneric: MedGeneric) {
     }
 }
 
+@Composable
+fun <T : Any> CommonState<T>.toComposable(successContent: @Composable (value:T) -> Unit) {
+    when(this)
+    {
+        CommonState.Fetching -> CenterProgress()
+        is CommonState.Success -> successContent(this.data)
+        else -> {}
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview3() {
     MedMateTheme {
-        MedGenericView(medGeneric = MedGeneric("Azythomycin","Hello"))
+        MedGenericView(medGeneric = MedGeneric("Azythomycin", "Hello"))
     }
 }

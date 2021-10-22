@@ -1,7 +1,6 @@
 package com.shubhobrataroy.bdmedmate.presenter.view
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
@@ -17,7 +16,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,7 +27,6 @@ import com.shubhobrataroy.bdmedmate.presenter.CommonState
 import com.shubhobrataroy.bdmedmate.presenter.ui.theme.CurrentColorPalette
 import com.shubhobrataroy.bdmedmate.presenter.ui.theme.MedMateTheme
 import com.shubhobrataroy.bdmedmate.presenter.viewmodel.MedicineListViewModel
-import com.shubhobrataroy.bdmedmate.ui.theme.BDMedMateIndianMedicineToBangladeshiMedicineTheme
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
@@ -38,7 +35,7 @@ import java.util.*
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {
 
-    private val viewModel by viewModels<MedicineListViewModel>()
+    val viewModel by viewModels<MedicineListViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -135,13 +132,8 @@ class MainActivity : FragmentActivity() {
 
     @Composable
     fun ItemExtraData(medicine: Medicine) {
-        val extraData by
-        viewModel.getGenericsAndCompanyDetails(medicine).observeAsState(null)
-
-        if (extraData == null) return
 
         Column {
-
             Spacer(
                 modifier = Modifier
                     .height(24.dp),
@@ -152,13 +144,8 @@ class MainActivity : FragmentActivity() {
                     .padding(horizontal = 8.dp),
                 onClick = {
                     val medicineDetailsFragment =
-                        MedicineDetailsFragment(
-                            viewModel,
-                            medicine,
-                            extraData?.first,
-                            extraData?.second
-                        )
-                    medicineDetailsFragment.show(supportFragmentManager, "Show")
+                        MedicineDetailsFragment.getInstance(medicine)
+                    medicineDetailsFragment.show(supportFragmentManager, medicine.name)
                 },
                 shape = RoundedCornerShape(16.dp)
             ) {
@@ -204,16 +191,6 @@ class MainActivity : FragmentActivity() {
                     )
 
 
-
-                if (medicine.genericName != null) {
-                    CommonDivider()
-                    Text(
-                        text = medicine.genericName,
-                        fontStyle = FontStyle.Italic,
-                        color = CurrentColorPalette.secondary
-                    )
-                }
-
                 if (medicine.companyName != null) {
                     CommonDivider()
                     Text(
@@ -222,6 +199,17 @@ class MainActivity : FragmentActivity() {
                         fontWeight = FontWeight.Bold
                     )
                 }
+
+                if (medicine.genericName != null) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = medicine.genericName,
+                        fontStyle = FontStyle.Italic,
+                        color = CurrentColorPalette.secondary
+                    )
+                }
+
+
 
 
                 AnimatedVisibility(visible = clicked) {

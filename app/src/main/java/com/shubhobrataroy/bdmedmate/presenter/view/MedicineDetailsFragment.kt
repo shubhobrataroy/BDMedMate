@@ -17,9 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.fragment.app.activityViewModels
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.shubhobrataroy.bdmedmate.domain.model.Company
 import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
@@ -36,35 +37,78 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalFoundationApi
 @AndroidEntryPoint
-class MedicineDetailsFragment(
-    private val viewModel: MedicineListViewModel,
-    private val medicineEntity: Medicine,
-    private val genericsEntity: MedGeneric?,
-    private val company: Company?
-) : BottomSheetDialogFragment() {
+class MedicineDetailsFragment : BottomSheetDialogFragment() {
+
+    private val viewModel by activityViewModels<MedicineListViewModel>()
+
+    private val bottomSheetBehavior = object : BottomSheetBehavior.BottomSheetCallback() {
+        private var lastState = -1
+
+        override fun onStateChanged(bottomSheet: View, newState: Int) {
+
+            if ((lastState == BottomSheetBehavior.STATE_EXPANDED &&
+                        newState == BottomSheetBehavior.STATE_DRAGGING) ||
+                listState?.firstVisibleItemIndex ?: -1 != 0
+            )
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+
+            lastState = newState
+        }
+
+        override fun onSlide(bottomSheet: View, slideOffset: Float) {
+
+        }
+
+    }
+
+
+    private lateinit var behavior: BottomSheetBehavior<View>
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         return ComposeView(requireContext()).apply {
             setContent {
                 MedMateTheme {
-                    MedicineDetails(medicineEntity, genericsEntity, company)
+                    MedicineDetails(medicineEntity)
                 }
             }
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        behavior = BottomSheetBehavior.from(view.parent as View)
+        behavior.addBottomSheetCallback(bottomSheetBehavior)
+    }
+
+    companion object {
+        lateinit var medicineEntity: Medicine
+
+        private var INSTANCE: MedicineDetailsFragment? = null
+
+        fun getInstance(medicine: Medicine): MedicineDetailsFragment {
+            medicineEntity = medicine
+
+            return if (INSTANCE != null) INSTANCE!!
+            else MedicineDetailsFragment()
+
+        }
+    }
+
+
+    private var listState: LazyListState? = null
 
     @Composable
     fun MedicineItemView(
         medicine: Medicine,
-        generic: MedGeneric?,
-        company: Company?
     ) {
 
+        listState = rememberLazyListState()
         Card(
             elevation = 4.dp,
             shape = RoundedCornerShape(8.dp),
@@ -72,7 +116,8 @@ class MedicineDetailsFragment(
                 .padding(horizontal = 6.dp),
         ) {
             LazyColumn(
-                Modifier
+                state = listState!!,
+                modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 8.dp, vertical = 16.dp)
             ) {
@@ -95,7 +140,10 @@ class MedicineDetailsFragment(
                 }
 
                 item {
-                    ItemExtraData(generic, company)
+                    ItemExtraData(
+                        viewModel.getGenericsAndCompanyDetails(medicineEntity)
+                            .observeAsState(initial = null)
+                    )
                 }
 
 
@@ -113,34 +161,37 @@ class MedicineDetailsFragment(
 
     @Composable
     fun ItemExtraData(
-        genericsEntity: MedGeneric?,
-        company: Company?
+        state: State<CommonState<Pair<MedGeneric?, Company?>>?>
     ) {
-        Column {
-            CommonDivider()
 
-            if (company != null)
-                Text(text = company.name)
+        state.value?.toComposable {
+            val (genericsEntity, company) = it
 
-            if (genericsEntity != null)
-                MedGenericView(medGeneric = genericsEntity)
+            Column {
+                CommonDivider()
+
+                if (company != null)
+                    Text(text = company.name)
+
+                if (genericsEntity != null)
+                    MedGenericView(medGeneric = genericsEntity)
 
 
-            Spacer(
-                modifier = Modifier
-                    .height(24.dp),
-            )
+                Spacer(
+                    modifier = Modifier
+                        .height(24.dp),
+                )
 
+            }
         }
     }
 
     @Composable
     fun MedicineDetails(
-        medicineEntity: Medicine,
-        genericsEntity: MedGeneric?, company: Company?
+        medicineEntity: Medicine
     ) {
         Card(shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)) {
-            MedicineItemView(medicineEntity, genericsEntity, company)
+            MedicineItemView(medicineEntity)
         }
     }
 

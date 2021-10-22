@@ -84,4 +84,5 @@ dependencies {
     //LiveData
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
+    implementation "androidx.fragment:fragment-ktx:1.3.3"
 }
