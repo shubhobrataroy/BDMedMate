@@ -13,13 +13,13 @@ data class MedicineDetailed(
     @Embedded val medicine: MedicineEntity,
 
     @Relation(
-        parentColumn = "brand_id",
+        parentColumn = "generic_id",
         entityColumn = "generic_id"
     )
     val genericsEntity: MedGenericsEntity?,
 
     @Relation(
-        parentColumn = "brand_id",
+        parentColumn = "company_id",
         entityColumn = "company_id"
     )
     val companyEntity: CompanyEntity?,

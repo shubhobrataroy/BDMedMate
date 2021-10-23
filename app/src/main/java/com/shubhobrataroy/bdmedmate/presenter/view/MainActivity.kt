@@ -3,12 +3,10 @@ package com.shubhobrataroy.bdmedmate.presenter.view
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -16,15 +14,11 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.fragment.app.FragmentActivity
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 import com.shubhobrataroy.bdmedmate.presenter.CommonState
-import com.shubhobrataroy.bdmedmate.presenter.ui.theme.CurrentColorPalette
 import com.shubhobrataroy.bdmedmate.presenter.ui.theme.MedMateTheme
 import com.shubhobrataroy.bdmedmate.presenter.viewmodel.MedicineListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,12 +49,20 @@ class MainActivity : FragmentActivity() {
     fun MedicineDataView(viewModel: MedicineListViewModel) {
         val state by viewModel.medListLiveData.observeAsState(CommonState.Idle)
 
-        MedicineListPage(medicineListState = state)
+
+        val medsListViewHolder = MedsListViewHolder { medicine ->
+            val medicineDetailsFragment =
+                MedicineDetailsFragment.getInstance(medicine)
+            medicineDetailsFragment.show(supportFragmentManager, medicine.name)
+        }
+        Column {
+            SearchHeader(viewModel.searchQueryState)
+            medsListViewHolder.MedicineListView(medicineListState = state)
+        }
     }
 
-
     @Composable
-    fun SearchHeader() {
+    fun SearchHeader(searchQueryState: MutableState<String>) {
         Card(
             modifier = Modifier.padding(bottom = 16.dp),
             elevation = 4.dp,
@@ -75,11 +77,11 @@ class MainActivity : FragmentActivity() {
 
                 Text(text = "Medicine", Modifier.fillMaxWidth())
 
-                val searchState = remember {
-                    viewModel.searchQueryState
+                val searchState by remember {
+                    searchQueryState
                 }
                 OutlinedTextField(
-                    value = searchState.value, onValueChange = {
+                    value = searchState, onValueChange = {
                         viewModel.searchMedicine(it)
                     },
                     label = {
@@ -92,151 +94,10 @@ class MainActivity : FragmentActivity() {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text(text = "Order: ")
-                    Spacer(modifier = Modifier.width(4.dp))
-                    CustomRadioGroup(arrayOf("A to Z", "Z to A")) { value, index ->
+                    FancyRadioGroup(arrayListOf("A to Z", "Z to A")) { index, value ->
                         viewModel.onMedicineOrderSelected(index)
                     }
                 }
-            }
-        }
-    }
-
-    @Composable
-    fun MedicineListPage(medicineListState: CommonState<List<Medicine>>) {
-        Column {
-            SearchHeader()
-            when (medicineListState) {
-                is CommonState.Error -> Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Text(text = "List Fetching error " + medicineListState.exception.message)
-                }
-
-
-                CommonState.Fetching -> CenterProgress()
-
-                is CommonState.Success ->
-                    MedicineListView(medicineListState = medicineListState)
-
-                CommonState.Idle -> Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Text(text = "Nothing Here")
-                }
-            }
-        }
-    }
-
-    @Composable
-    fun ItemExtraData(medicine: Medicine) {
-
-        Column {
-            Spacer(
-                modifier = Modifier
-                    .height(24.dp),
-            )
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
-                onClick = {
-                    val medicineDetailsFragment =
-                        MedicineDetailsFragment.getInstance(medicine)
-                    medicineDetailsFragment.show(supportFragmentManager, medicine.name)
-                },
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Text(text = "View Details")
-            }
-        }
-    }
-
-    @Composable
-    fun MedicineItemView(medicine: Medicine) {
-        var clicked by remember {
-            mutableStateOf(false)
-        }
-
-        Card(
-            elevation = 2.dp,
-            shape = RoundedCornerShape(8.dp),
-            modifier = Modifier
-                .padding(horizontal = 6.dp)
-                .clickable {
-                    clicked = !clicked
-                },
-        ) {
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 16.dp)
-            ) {
-                Row {
-                    Text(text = medicine.name, fontWeight = FontWeight.Bold, fontSize = 24.sp)
-                    if (medicine.type != null)
-                        Text(
-                            text = medicine.type,
-                            fontSize = 14.sp,
-                            modifier = Modifier.padding(start = 8.dp),
-                            color = CurrentColorPalette.secondary
-                        )
-                }
-                if (medicine.strength != null)
-                    Text(
-                        text = medicine.strength,
-                        color = CurrentColorPalette.secondary, fontSize = 12.sp
-                    )
-
-
-                if (medicine.companyName != null) {
-                    CommonDivider()
-                    Text(
-                        text = medicine.companyName,
-                        color = CurrentColorPalette.secondaryVariant,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
-                if (medicine.genericName != null) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = medicine.genericName,
-                        fontStyle = FontStyle.Italic,
-                        color = CurrentColorPalette.secondary
-                    )
-                }
-
-
-
-
-                AnimatedVisibility(visible = clicked) {
-                    ItemExtraData(medicine = medicine)
-                }
-
-
-            }
-        }
-    }
-
-
-    @Composable
-    fun MedicineListView(
-        medicineListState: CommonState.Success<List<Medicine>>,
-        modifier: Modifier = Modifier
-    ) {
-        LazyColumn(
-            modifier = modifier,
-            contentPadding = PaddingValues(
-                vertical = 4.dp,
-                horizontal = 8.dp
-            )
-        ) {
-            items(medicineListState.data.size) { index ->
-                MedicineItemView(medicine = medicineListState.data[index])
-                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
@@ -252,8 +113,11 @@ class MainActivity : FragmentActivity() {
         }
 
         MedMateTheme {
-            MedicineListPage(medicineListState = CommonState.Success(meds))
-//            SearchHeader()
+            Column {
+                SearchHeader(mutableStateOf(""))
+//                MedsListViewHolder().MedicineListView(medicineListState = CommonState.Success(meds))
+//           } SearchHeader()
+            }
         }
     }
 }
@@ -267,7 +131,7 @@ fun CenterProgress() {
 }
 
 @Composable
-fun CustomRadioGroup(options: Array<String>, onChanged: (value: String, index: Int) -> Unit) {
+fun FancyRadioGroup(options: Array<String>, onChanged: (value: String, index: Int) -> Unit) {
 
     val selected = remember { mutableStateOf(options[0]) }
 
