@@ -3,6 +3,7 @@ package com.shubhobrataroy.bdmedmate.data
 import com.shubhobrataroy.bdmedmate.domain.Country
 import com.shubhobrataroy.bdmedmate.domain.MedDataSource
 import com.shubhobrataroy.bdmedmate.domain.Repository
+import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
 import dagger.Lazy
 import java.util.HashMap
 import javax.inject.Inject
@@ -23,4 +24,8 @@ class RepositoryImpl @Inject constructor(countryWiseDataSources: Lazy<HashMap<Co
         byMedNameAsc: Boolean
     ) =
         countryWiseDataSources[country]?.getAllMedicines(searchQuery, byMedNameAsc) ?: emptyList()
+
+    override suspend fun getAllGenerics(country: Country): List<MedGeneric> {
+       return countryWiseDataSources[country]?.getAllGenerics()?: emptyList()
+    }
 }

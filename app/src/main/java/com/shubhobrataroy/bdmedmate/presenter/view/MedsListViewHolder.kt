@@ -118,21 +118,19 @@ class MedsListViewHolder(private val onItemClicked: ((medicine: Medicine) -> Uni
 
     @Composable
     fun MedicineListView(
-        medicineListState: CommonState<List<Medicine>>,
+        medicineListState: List<Medicine>,
         modifier: Modifier = Modifier
     ) {
-        medicineListState.toComposable {
-            LazyColumn(
-                modifier = modifier,
-                contentPadding = PaddingValues(
-                    vertical = 4.dp,
-                    horizontal = 8.dp
-                )
-            ) {
-                items(it){ item ->
-                    MedicineItemView(medicine = item)
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
+        LazyColumn(
+            modifier = modifier,
+            contentPadding = PaddingValues(
+                vertical = 4.dp,
+                horizontal = 8.dp
+            )
+        ) {
+            items(medicineListState){ item ->
+                MedicineItemView(medicine = item)
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }

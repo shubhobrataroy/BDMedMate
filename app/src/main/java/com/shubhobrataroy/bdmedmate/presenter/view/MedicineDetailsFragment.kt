@@ -30,6 +30,7 @@ import com.shubhobrataroy.bdmedmate.presenter.CommonState
 import com.shubhobrataroy.bdmedmate.presenter.ui.theme.CurrentColorPalette
 import com.shubhobrataroy.bdmedmate.presenter.ui.theme.MedMateTheme
 import com.shubhobrataroy.bdmedmate.presenter.viewmodel.MedicineListViewModel
+import com.shubhobrataroy.bdmedmate.ui.theme.Typography
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -124,7 +125,7 @@ class MedicineDetailsFragment : BottomSheetDialogFragment() {
             ) {
                 item {
                     Row {
-                        Text(text = medicine.name, fontWeight = FontWeight.Bold, fontSize = 24.sp)
+                        Text(text = medicine.name, style = Typography.h4)
                         if (medicine.type != null)
                             Text(
                                 text = medicine.type,

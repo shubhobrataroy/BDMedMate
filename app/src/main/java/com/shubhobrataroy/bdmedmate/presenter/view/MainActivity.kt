@@ -5,9 +5,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -19,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 import com.shubhobrataroy.bdmedmate.presenter.CommonState
+import com.shubhobrataroy.bdmedmate.presenter.ListData
 import com.shubhobrataroy.bdmedmate.presenter.ui.theme.MedMateTheme
 import com.shubhobrataroy.bdmedmate.presenter.viewmodel.MedicineListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,13 +30,19 @@ class MainActivity : FragmentActivity() {
 
     val viewModel by viewModels<MedicineListViewModel>()
 
+    private val listTypes = arrayListOf(
+        "Medicine",
+        "Generic",
+        "Brand"
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             MedMateTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    MedicineDataView(viewModel = viewModel)
+                    AllDataView(viewModel = viewModel)
                 }
             }
         }
@@ -46,23 +51,46 @@ class MainActivity : FragmentActivity() {
     }
 
     @Composable
-    fun MedicineDataView(viewModel: MedicineListViewModel) {
-        val state by viewModel.medListLiveData.observeAsState(CommonState.Idle)
+    fun AllDataView(viewModel: MedicineListViewModel) {
+        val state by viewModel.selectedCategoryItemList.observeAsState(CommonState.Idle)
 
 
+
+        Column {
+            SearchHeader(viewModel.searchQueryState)
+            state.toComposable {
+                when (it) {
+                    is ListData.MedicineGenericListData -> {
+                        MedGenericsViewHolder().MedicineGenericListView(
+                            it.list
+                        ){
+
+                        }
+                    }
+                    is ListData.MedicineListData -> MedicineListViewer(listData = it)
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun MedicineListViewer(listData: ListData.MedicineListData) {
         val medsListViewHolder = MedsListViewHolder { medicine ->
             val medicineDetailsFragment =
                 MedicineDetailsFragment.getInstance(medicine)
             medicineDetailsFragment.show(supportFragmentManager, medicine.name)
         }
-        Column {
-            SearchHeader(viewModel.searchQueryState)
-            medsListViewHolder.MedicineListView(medicineListState = state)
-        }
+        medsListViewHolder.MedicineListView(medicineListState = listData.list)
     }
 
     @Composable
     fun SearchHeader(searchQueryState: MutableState<String>) {
+        val selectedCategory by remember {
+            mutableStateOf(0)
+        }
+
+        val selectedItemText = listTypes[selectedCategory]
+
         Card(
             modifier = Modifier.padding(bottom = 16.dp),
             elevation = 4.dp,
@@ -75,7 +103,7 @@ class MainActivity : FragmentActivity() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                Text(text = "Medicine", Modifier.fillMaxWidth())
+                Text(text = selectedItemText, Modifier.fillMaxWidth())
 
                 val searchState by remember {
                     searchQueryState
@@ -85,18 +113,23 @@ class MainActivity : FragmentActivity() {
                         viewModel.searchMedicine(it)
                     },
                     label = {
-                        Text("Search by Medicine Name")
+                        Text("Search by $selectedItemText Name")
                     }, modifier = Modifier.fillMaxWidth(.95f)
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    FancyRadioGroup(arrayListOf("A to Z", "Z to A")) { index, value ->
-                        viewModel.onMedicineOrderSelected(index)
-                    }
+                CommonDivider(16.dp)
+
+                FancyRadioGroup(
+                    options = listTypes, containerCorners = 0.dp,
+                    selectedItemCorner = 0.dp
+                ) { index, value ->
+                        viewModel.selectCategory(index)
+                }
+                CommonDivider(verticalSpace = 16.dp)
+
+                FancyRadioGroup(arrayListOf("A to Z", "Z to A")) { index, value ->
+                    viewModel.onMedicineOrderSelected(index)
                 }
             }
         }
@@ -123,36 +156,3 @@ class MainActivity : FragmentActivity() {
 }
 
 
-@Composable
-fun CenterProgress() {
-    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-        CircularProgressIndicator()
-    }
-}
-
-@Composable
-fun FancyRadioGroup(options: Array<String>, onChanged: (value: String, index: Int) -> Unit) {
-
-    val selected = remember { mutableStateOf(options[0]) }
-
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .selectableGroup()
-    ) {
-        options.forEachIndexed { index, value ->
-            Row(Modifier.clickable {
-                selected.value = value
-                onChanged(value, index)
-            }) {
-                RadioButton(selected = value == selected.value, onClick = null)
-                Text(
-                    text = value,
-                    style = MaterialTheme.typography.body1.merge(),
-                    modifier = Modifier.padding(start = 2.dp)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-            }
-        }
-    }
-}

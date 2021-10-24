@@ -10,6 +10,7 @@ import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 import com.shubhobrataroy.bdmedmate.domain.wrapWithState
 import com.shubhobrataroy.bdmedmate.presenter.CommonState
+import com.shubhobrataroy.bdmedmate.presenter.ListData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -24,10 +25,15 @@ class MedicineListViewModel @Inject constructor(
 
     private val country = Country.Bangladesh
 
-    private val _medListLiveData = MutableLiveData<CommonState<List<Medicine>>>().apply {
+    private val _medListLiveData = MutableLiveData<CommonState<ListData.MedicineListData>>().apply {
         postValue(CommonState.Idle)
     }
-    val medListLiveData: LiveData<CommonState<List<Medicine>>> = _medListLiveData
+    val medListLiveData: LiveData<CommonState<ListData.MedicineListData>> = _medListLiveData
+
+    private val _selectedCategoryItemList =
+        MutableLiveData<CommonState<ListData>>(CommonState.Idle)
+
+    val selectedCategoryItemList: LiveData<CommonState<ListData>> = _selectedCategoryItemList
 
     private var searchJob: Deferred<String>? = null
 
@@ -38,11 +44,13 @@ class MedicineListViewModel @Inject constructor(
     fun fetchMedicineList() {
         searchJob = viewModelScope.async(Dispatchers.IO) {
             val lastQuery = searchQueryState.value
-            _medListLiveData.execCatching {
-                repository.getAllMedicinesByCountry(
-                    lastQuery,
-                    country,
-                    medicineListAsc
+            _selectedCategoryItemList.execCatching {
+                ListData.MedicineListData(
+                    repository.getAllMedicinesByCountry(
+                        lastQuery,
+                        country,
+                        medicineListAsc
+                    )
                 )
 
             }
@@ -68,23 +76,23 @@ class MedicineListViewModel @Inject constructor(
     private fun performLocalSearch(query: String, existingList: List<Medicine>) {
         searchJob = viewModelScope.async(Dispatchers.Default) {
             _medListLiveData.execCatching {
-                existingList.filter { it.name.contains(query,true) }
+                ListData.MedicineListData(existingList.filter { it.name.contains(query, true) })
             }
             query
         }
     }
 
-    private fun shouldDoLocalSearch(latestQuery: String,oldQuery:String) =
-        oldQuery.isNotEmpty() && latestQuery.startsWith(oldQuery) && medListLiveData.value.run {
+    private fun shouldDoLocalSearch(latestQuery: String, oldQuery: String) =
+        oldQuery.isNotEmpty() && latestQuery.startsWith(oldQuery) && _selectedCategoryItemList.value.run {
             if (this == null) return@run false
-            if (this is CommonState.Success) this.data.isNotEmpty()
+            if (this is CommonState.Success) !this.data.isEmpty()
             else false
         }
 
 
     private suspend fun requestSearchIfRequired(searchQuery: String) {
 
-        if (shouldDoLocalSearch(searchQuery,searchQueryState.value)) {
+        if (shouldDoLocalSearch(searchQuery, searchQueryState.value)) {
             this.searchQueryState.value = searchQuery
             performLocalSearch(searchQuery, _medListLiveData.getCalculatedValue())
         } else {
@@ -105,19 +113,36 @@ class MedicineListViewModel @Inject constructor(
             return
         }
 
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch(Dispatchers.IO) {
             requestSearchIfRequired(searchQuery)
         }
     }
 
 
-    private fun MutableLiveData<CommonState<List<Medicine>>>.getCalculatedValue(): List<Medicine> {
+    private fun MutableLiveData<CommonState<ListData.MedicineListData>>.getCalculatedValue(): List<Medicine> {
         val value = value
-        return if (value is CommonState.Success) value.data
+        return if (value is CommonState.Success) value.data.list
         else emptyList()
     }
 
-    fun fetchSimilarMeds(medicine: Medicine) = liveData<CommonState<List<Medicine>>>(Dispatchers.IO) {
-       wrapWithState { medicine.similarMedicines() }
+    fun fetchSimilarMeds(medicine: Medicine) =
+        liveData<CommonState<List<Medicine>>>(Dispatchers.IO) {
+            wrapWithState { medicine.similarMedicines() }
+        }
+
+   suspend fun fetchGenericList()
+    {
+        _selectedCategoryItemList.execCatching {
+           ListData.MedicineGenericListData( repository.getAllGenerics())
+        }
+    }
+
+    fun selectCategory(index: Int) {
+        viewModelScope.launch(Dispatchers.IO){
+            when (index) {
+                0 -> fetchMedicineList()
+                1 -> fetchGenericList()
+            }
+        }
     }
 }
