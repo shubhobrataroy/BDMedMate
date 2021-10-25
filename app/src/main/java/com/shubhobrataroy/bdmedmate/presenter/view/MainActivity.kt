@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 import com.shubhobrataroy.bdmedmate.presenter.CommonState
-import com.shubhobrataroy.bdmedmate.presenter.ListData
+import com.shubhobrataroy.bdmedmate.presenter.ShowableListData
 import com.shubhobrataroy.bdmedmate.presenter.ui.theme.MedMateTheme
 import com.shubhobrataroy.bdmedmate.presenter.viewmodel.MedicineListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,12 +47,12 @@ class MainActivity : FragmentActivity() {
             }
         }
 
-        viewModel.fetchMedicineList()
+        viewModel.fetchSelectedOptionData()
     }
 
     @Composable
     fun AllDataView(viewModel: MedicineListViewModel) {
-        val state by viewModel.selectedCategoryItemList.observeAsState(CommonState.Idle)
+        val state by viewModel.selectedCategoryItemShowableList.observeAsState(CommonState.Idle)
 
 
 
@@ -60,27 +60,27 @@ class MainActivity : FragmentActivity() {
             SearchHeader(viewModel.searchQueryState)
             state.toComposable {
                 when (it) {
-                    is ListData.MedicineGenericListData -> {
+                    is ShowableListData.MedicineGenericShowableListData -> {
                         MedGenericsViewHolder().MedicineGenericListView(
                             it.list
                         ){
 
                         }
                     }
-                    is ListData.MedicineListData -> MedicineListViewer(listData = it)
+                    is ShowableListData.MedicineShowableListData -> MedicineListViewer(showableListData = it)
                 }
             }
         }
     }
 
     @Composable
-    fun MedicineListViewer(listData: ListData.MedicineListData) {
+    fun MedicineListViewer(showableListData: ShowableListData.MedicineShowableListData) {
         val medsListViewHolder = MedsListViewHolder { medicine ->
             val medicineDetailsFragment =
                 MedicineDetailsFragment.getInstance(medicine)
             medicineDetailsFragment.show(supportFragmentManager, medicine.name)
         }
-        medsListViewHolder.MedicineListView(medicineListState = listData.list)
+        medsListViewHolder.MedicineListView(medicineListState = showableListData.list)
     }
 
     @Composable
@@ -129,7 +129,7 @@ class MainActivity : FragmentActivity() {
                 CommonDivider(verticalSpace = 16.dp)
 
                 FancyRadioGroup(arrayListOf("A to Z", "Z to A")) { index, value ->
-                    viewModel.onMedicineOrderSelected(index)
+                    viewModel.onListOrderSelected(index)
                 }
             }
         }

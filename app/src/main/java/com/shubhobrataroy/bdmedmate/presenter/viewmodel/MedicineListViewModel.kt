@@ -1,16 +1,15 @@
 package com.shubhobrataroy.bdmedmate.presenter.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
 import com.shubhobrataroy.bdmedmate.domain.Country
 import com.shubhobrataroy.bdmedmate.domain.Repository
 import com.shubhobrataroy.bdmedmate.domain.execCatching
-import com.shubhobrataroy.bdmedmate.domain.model.Company
-import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 import com.shubhobrataroy.bdmedmate.domain.wrapWithState
 import com.shubhobrataroy.bdmedmate.presenter.CommonState
-import com.shubhobrataroy.bdmedmate.presenter.ListData
+import com.shubhobrataroy.bdmedmate.presenter.ShowableListData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -25,38 +24,31 @@ class MedicineListViewModel @Inject constructor(
 
     private val country = Country.Bangladesh
 
-    private val _medListLiveData = MutableLiveData<CommonState<ListData.MedicineListData>>().apply {
-        postValue(CommonState.Idle)
+    private val options: List<Options> by lazy {
+        arrayListOf(
+            MedicineListOption(repository, country),
+            GenericListOption(repository, country, ),
+            MedicineListOption(repository, country, ),
+        )
     }
-    val medListLiveData: LiveData<CommonState<ListData.MedicineListData>> = _medListLiveData
+
+    @Volatile
+    private var currentlySelectedOption = options[0]
+
 
     private val _selectedCategoryItemList =
-        MutableLiveData<CommonState<ListData>>(CommonState.Idle)
+        MutableLiveData<CommonState<ShowableListData>>(CommonState.Idle)
 
-    val selectedCategoryItemList: LiveData<CommonState<ListData>> = _selectedCategoryItemList
+    val selectedCategoryItemShowableList: LiveData<CommonState<ShowableListData>> =
+        _selectedCategoryItemList
 
     private var searchJob: Deferred<String>? = null
 
-    private var medicineListAsc: Boolean = true
+    private var listAsc: Boolean = true
 
     val searchQueryState = mutableStateOf("")
 
-    fun fetchMedicineList() {
-        searchJob = viewModelScope.async(Dispatchers.IO) {
-            val lastQuery = searchQueryState.value
-            _selectedCategoryItemList.execCatching {
-                ListData.MedicineListData(
-                    repository.getAllMedicinesByCountry(
-                        lastQuery,
-                        country,
-                        medicineListAsc
-                    )
-                )
 
-            }
-            lastQuery
-        }
-    }
 
     fun getGenericsAndCompanyDetails(medicine: Medicine) =
         liveData(Dispatchers.IO) {
@@ -65,22 +57,30 @@ class MedicineListViewModel @Inject constructor(
             }
         }
 
-    fun onMedicineOrderSelected(index: Int) {
+    fun onListOrderSelected(index: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            medicineListAsc = index == 0
-            fetchMedicineList()
-        }
-    }
-
-
-    private fun performLocalSearch(query: String, existingList: List<Medicine>) {
-        searchJob = viewModelScope.async(Dispatchers.Default) {
-            _medListLiveData.execCatching {
-                ListData.MedicineListData(existingList.filter { it.name.contains(query, true) })
+            listAsc = index ==0
+            currentlySelectedOption.setNewListOrder(listAsc)
+            _selectedCategoryItemList.execCatching {
+                currentlySelectedOption.searchItemFromRepo(searchQueryState.value)
             }
-            query
         }
     }
+
+
+//    private fun performLocalSearch(query: String, existingList: List<Medicine>) {
+//        searchJob = viewModelScope.async(Dispatchers.Default) {
+//            _medListLiveData.execCatching {
+//                ShowableListData.MedicineShowableListData(existingList.filter {
+//                    it.name.contains(
+//                        query,
+//                        true
+//                    )
+//                })
+//            }
+//            query
+//        }
+//    }
 
     private fun shouldDoLocalSearch(latestQuery: String, oldQuery: String) =
         oldQuery.isNotEmpty() && latestQuery.startsWith(oldQuery) && _selectedCategoryItemList.value.run {
@@ -92,57 +92,78 @@ class MedicineListViewModel @Inject constructor(
 
     private suspend fun requestSearchIfRequired(searchQuery: String) {
 
-        if (shouldDoLocalSearch(searchQuery, searchQueryState.value)) {
-            this.searchQueryState.value = searchQuery
-            performLocalSearch(searchQuery, _medListLiveData.getCalculatedValue())
-        } else {
-            this.searchQueryState.value = searchQuery
-            fetchMedicineList()
+        this.searchQueryState.value = searchQuery
+
+//        if (shouldDoLocalSearch(searchQuery, searchQueryState.value)) {
+//            this.searchQueryState.value = searchQuery
+//            performLocalSearch(searchQuery, _medListLiveData.getCalculatedValue())
+//        } else {
+//            this.searchQueryState.value = searchQuery
+//            fetchMedicineList()
+//        }
+
+        _selectedCategoryItemList.execCatching {
+            currentlySelectedOption.doIntelligentSearch(
+                searchQuery = searchQuery,
+                _selectedCategoryItemList.value
+            ) ?: currentlySelectedOption.getOptionDataByPresets()
         }
+
         val latestQuery = this.searchQueryState.value
-        val lastQuery = searchJob?.await() ?: ""
-        if (latestQuery != lastQuery)
+
+        if (latestQuery != searchQuery)
             requestSearchIfRequired(latestQuery)
     }
 
     fun searchMedicine(searchQuery: String) {
 
 
-        if (searchJob?.isCompleted == false) {
+        if (searchJob != null && searchJob?.isCompleted == false) {
             this.searchQueryState.value = searchQuery
             return
         }
 
-        viewModelScope.launch(Dispatchers.IO) {
+        searchJob = viewModelScope.async(Dispatchers.IO) {
             requestSearchIfRequired(searchQuery)
+            searchQuery
         }
     }
 
 
-    private fun MutableLiveData<CommonState<ListData.MedicineListData>>.getCalculatedValue(): List<Medicine> {
+    private fun MutableLiveData<CommonState<ShowableListData.MedicineShowableListData>>.getCalculatedValue(): List<Medicine> {
         val value = value
         return if (value is CommonState.Success) value.data.list
         else emptyList()
     }
 
     fun fetchSimilarMeds(medicine: Medicine) =
-        liveData<CommonState<List<Medicine>>>(Dispatchers.IO) {
+        liveData(Dispatchers.IO) {
             wrapWithState { medicine.similarMedicines() }
         }
 
-   suspend fun fetchGenericList()
-    {
-        _selectedCategoryItemList.execCatching {
-           ListData.MedicineGenericListData( repository.getAllGenerics())
+    fun selectCategory(index: Int) {
+        Log.e("MedicineViewModel","on category selected")
+        val value = searchQueryState.value
+        searchJob = viewModelScope.async(Dispatchers.IO) {
+            currentlySelectedOption = options[index]
+            currentlySelectedOption.setNewListOrder(this@MedicineListViewModel.listAsc)
+            _selectedCategoryItemList.execCatching {
+                currentlySelectedOption.doIntelligentSearch(
+                    searchQuery = value,
+                    _selectedCategoryItemList.value
+                )
+            }
+            value
         }
     }
 
-    fun selectCategory(index: Int) {
-        viewModelScope.launch(Dispatchers.IO){
-            when (index) {
-                0 -> fetchMedicineList()
-                1 -> fetchGenericList()
-            }
-        }
+    fun fetchSelectedOptionData() {
+       viewModelScope.launch(Dispatchers.IO) {
+           _selectedCategoryItemList.execCatching {
+                currentlySelectedOption.run {
+                    getOptionDataByPresets()
+                }
+           }
+       }
     }
 }

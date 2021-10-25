@@ -10,11 +10,11 @@ import java.lang.Exception
  **/
 
 
-suspend fun <T : Any> MutableLiveData<CommonState<T>>.execCatching(task: suspend () -> T): CommonState<T> {
+suspend fun <T : Any> MutableLiveData<CommonState<T>>.execCatching(task: suspend () -> T?): CommonState<T> {
     postValue(CommonState.Fetching)
 
     return try {
-        CommonState.Success(task()).apply {
+        CommonState.Success(task()?: throw Exception("No Data")).apply {
             postValue(this)
         }
 

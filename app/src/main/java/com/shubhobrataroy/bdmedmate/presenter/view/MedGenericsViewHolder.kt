@@ -1,5 +1,6 @@
 package com.shubhobrataroy.bdmedmate.presenter.view
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -36,7 +37,9 @@ class MedGenericsViewHolder () {
     @Composable
     fun MedicineGenericItemView(medGeneric: MedGeneric ,  onItemClicked: ( medGeneric:MedGeneric ) ->Unit)
     {
-        Column {
+        Column (Modifier.clickable {
+            onItemClicked(medGeneric)
+        }){
             Card(modifier = Modifier.fillMaxWidth(), elevation = 1.dp) {
                 Text(
                     text = medGeneric.name, fontSize = 16.sp, modifier = Modifier.padding(
