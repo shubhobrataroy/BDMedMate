@@ -17,7 +17,7 @@ class GenericListOption(
     private var lastSuccessfulSearchQuery = ""
 
     override suspend fun getOptionDataByPresets(): ShowableListData {
-       return ShowableListData.MedicineGenericShowableListData(repository.getAllGenerics(country))
+       return ShowableListData.MedicineGenericShowableListData(repository.getAllGenerics(country= country))
     }
 
     override suspend fun searchItemFromRepo(searchQuery: String): ShowableListData {
@@ -32,7 +32,7 @@ class GenericListOption(
         searchQuery: String,
         showableListData: ShowableListData
     ): ShowableListData {
-        Log.d("GenericSearch","Local Search")
+        Log.d("MEDLOG","Generic Local Search")
         this.searchQuery = searchQuery
         val optionDataByPresets = getOptionDataByPresets()
         lastSuccessfulSearchQuery = searchQuery
@@ -43,7 +43,7 @@ class GenericListOption(
         searchQuery: String,
         commonState: CommonState<ShowableListData>?
     ): ShowableListData? {
-        Log.d("GenericSearch","Intelligent Search")
+        Log.d("MEDLOG","Generic Intelligent Search")
        return if(commonState!=null && commonState is CommonState.Success)
        {
            if(commonState.data is ShowableListData.MedicineGenericShowableListData)

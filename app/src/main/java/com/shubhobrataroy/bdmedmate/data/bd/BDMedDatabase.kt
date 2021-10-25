@@ -50,8 +50,21 @@ abstract class BDMedDatabase : RoomDatabase(), MedDataSource {
             .map { it.toMedicine() }
     }
 
-    override suspend fun getAllGenerics(): List<MedGeneric> {
-        return dao.getAllMedGenericsData().map { it.toMedGeneric() }
+    override suspend fun getAllGenerics(genericSearchQuery:String ,byNameAsc: Boolean ): List<MedGeneric> {
+
+        val orderLogic = buildString {
+            append("generic_name ")
+            append(if (byNameAsc) "asc" else "desc")
+        }
+
+        val whereLogic = buildString {
+            append("generic_name like '%$genericSearchQuery%'")
+        }
+
+        val query = SimpleSQLiteQuery("select * from generic $whereLogic order by $orderLogic")
+
+
+        return dao.getAllMedGenericsData(query = query).map { it.toMedGeneric() }
     }
 
     override suspend fun getAllCompany(): List<Company> {

@@ -9,6 +9,6 @@ import com.shubhobrataroy.bdmedmate.domain.model.Medicine
  **/
 interface MedDataSource {
     suspend fun getAllMedicines(medSearchQuery: String="", byMedNameAsc: Boolean = true): List<Medicine>
-    suspend fun getAllGenerics(): List<MedGeneric>
+    suspend fun getAllGenerics(genericSearchQuery:String ="",byNameAsc: Boolean = true): List<MedGeneric>
     suspend fun getAllCompany(): List<Company>
 }

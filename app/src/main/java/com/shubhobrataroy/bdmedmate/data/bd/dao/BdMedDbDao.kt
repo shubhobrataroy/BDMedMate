@@ -28,8 +28,8 @@ interface BdMedDbDao {
     ): List<MedicineDetailed>
 
 
-    @Query("select * from generic")
-    fun getAllMedGenericsData(): List<MedGenericsEntity>
+    @RawQuery
+    fun getAllMedGenericsData(query: SupportSQLiteQuery): List<MedGenericsEntity>
 
 
     @Query("select * from company_name")

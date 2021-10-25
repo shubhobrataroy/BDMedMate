@@ -16,7 +16,7 @@ class MedicineListOption constructor(
     private var lastSuccessfulSearchQuery = ""
 
     override suspend fun getOptionDataByPresets(): ShowableListData {
-        Log.d("MedSearch","Repo Search")
+        Log.d("MEDLOG","Med Repo Search")
         val list = repository.getAllMedicinesByCountry(
             searchQuery,
             country,isAscOrder
@@ -35,7 +35,7 @@ class MedicineListOption constructor(
         searchQuery: String,
         showableListData: ShowableListData
     ): ShowableListData {
-        Log.d("MedSearch","Local Search")
+        Log.d("MEDLOG","Med Local Search")
         this.searchQuery = searchQuery
         return if (showableListData is ShowableListData.MedicineShowableListData) {
 
@@ -59,6 +59,7 @@ class MedicineListOption constructor(
         searchQuery: String,
         commonState: CommonState<ShowableListData>?
     ): ShowableListData {
+        Log.d("MEDLOG","Med Repo Search")
         return when (commonState) {
             is CommonState.Error, null, CommonState.Idle, CommonState.Fetching -> getOptionDataByPresets()
             is CommonState.Success -> {
@@ -69,7 +70,7 @@ class MedicineListOption constructor(
                         searchItemLocally(searchQuery,commonState.data)
                     else searchItemFromRepo(searchQuery)
                 }
-                else commonState?.data
+                else searchItemFromRepo(searchQuery)
             }
         }
     }

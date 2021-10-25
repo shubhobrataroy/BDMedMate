@@ -142,7 +142,7 @@ class MedicineListViewModel @Inject constructor(
         }
 
     fun selectCategory(index: Int) {
-        Log.e("MedicineViewModel","on category selected")
+        Log.e("MEDLOG","on category selected")
         val value = searchQueryState.value
         searchJob = viewModelScope.async(Dispatchers.IO) {
             currentlySelectedOption = options[index]
