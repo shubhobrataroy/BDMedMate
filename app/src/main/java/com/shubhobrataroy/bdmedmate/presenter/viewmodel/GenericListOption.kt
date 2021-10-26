@@ -17,7 +17,7 @@ class GenericListOption(
     private var lastSuccessfulSearchQuery = ""
 
     override suspend fun getOptionDataByPresets(): ShowableListData {
-       return ShowableListData.MedicineGenericShowableListData(repository.getAllGenerics(country= country))
+       return ShowableListData.MedicineGenericShowableListData(repository.getAllGenerics(country= country,searchQuery = searchQuery,byNameAsc = isAscOrder))
     }
 
     override suspend fun searchItemFromRepo(searchQuery: String): ShowableListData {

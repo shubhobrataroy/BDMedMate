@@ -61,7 +61,7 @@ abstract class BDMedDatabase : RoomDatabase(), MedDataSource {
             append("generic_name like '%$genericSearchQuery%'")
         }
 
-        val query = SimpleSQLiteQuery("select * from generic $whereLogic order by $orderLogic")
+        val query = SimpleSQLiteQuery("select * from generic where $whereLogic order by $orderLogic")
 
 
         return dao.getAllMedGenericsData(query = query).map { it.toMedGeneric() }

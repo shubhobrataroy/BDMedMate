@@ -63,11 +63,14 @@ class MainActivity : FragmentActivity() {
                     is ShowableListData.MedicineGenericShowableListData -> {
                         MedGenericsViewHolder().MedicineGenericListView(
                             it.list
-                        ){
-
+                        ) {
+                            val medGenercisFragment = MedGenercisFragment.getInstance(it)
+                            medGenercisFragment.show(supportFragmentManager, it.name)
                         }
                     }
-                    is ShowableListData.MedicineShowableListData -> MedicineListViewer(showableListData = it)
+                    is ShowableListData.MedicineShowableListData -> MedicineListViewer(
+                        showableListData = it
+                    )
                 }
             }
         }
@@ -85,7 +88,7 @@ class MainActivity : FragmentActivity() {
 
     @Composable
     fun SearchHeader(searchQueryState: MutableState<String>) {
-        val selectedCategory by remember {
+        var selectedCategory by remember {
             mutableStateOf(0)
         }
 
@@ -124,7 +127,8 @@ class MainActivity : FragmentActivity() {
                     options = listTypes, containerCorners = 0.dp,
                     selectedItemCorner = 0.dp
                 ) { index, value ->
-                        viewModel.selectCategory(index)
+                    selectedCategory = index
+                    viewModel.selectCategory(index)
                 }
                 CommonDivider(verticalSpace = 16.dp)
 

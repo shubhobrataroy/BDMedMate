@@ -30,11 +30,12 @@ import com.shubhobrataroy.bdmedmate.ui.theme.Typography
 
 
 @Composable
-fun CommonDivider(verticalSpace :Dp =8.dp,
-                  topSpace:Dp = verticalSpace,
-                  bottomSpace:Dp = verticalSpace,
-                  thickness:Dp = 1.dp
-                  ) {
+fun CommonDivider(
+    verticalSpace: Dp = 8.dp,
+    topSpace: Dp = verticalSpace,
+    bottomSpace: Dp = verticalSpace,
+    thickness: Dp = 1.dp
+) {
     Column {
         Spacer(
             modifier = Modifier
@@ -75,9 +76,12 @@ fun Paragraph(title: String, paragraph: String?) {
 }
 
 @Composable
-fun MedGenericView(medGeneric: MedGeneric,
-                   isGenericMainView: Boolean = false) {
-    Column {
+fun MedGenericView(
+    medGeneric: MedGeneric,
+    isGenericMainView: Boolean = false,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier){
         if (!isGenericMainView)
             Text(
                 text = medGeneric.name,
@@ -86,7 +90,11 @@ fun MedGenericView(medGeneric: MedGeneric,
                 color = CurrentColorPalette.secondary
             )
         else
-            Text(text = medGeneric.name, style = Typography.h5)
+            Text(
+                text = medGeneric.name,
+                style = Typography.h5,
+                color = CurrentColorPalette.secondary
+            )
         CommonDivider()
         Paragraph(title = "Dosage", medGeneric.dosage)
         Paragraph(title = "Indication", medGeneric.indication)
@@ -96,13 +104,16 @@ fun MedGenericView(medGeneric: MedGeneric,
 }
 
 @Composable
-fun <T : Any> CommonState<T>.toComposable(defaultValue:T?=null, successContent: @Composable (value: T) -> Unit) {
+fun <T : Any> CommonState<T>.toComposable(
+    defaultValue: T? = null,
+    successContent: @Composable (value: T) -> Unit
+) {
     when (this) {
         CommonState.Fetching -> CenterProgress()
         is CommonState.Success -> successContent(this.data)
 
         else -> {
-            if(defaultValue!=null) successContent(defaultValue)
+            if (defaultValue != null) successContent(defaultValue)
         }
     }
 }
@@ -116,8 +127,8 @@ fun FancyRadioGroup(
     previouslySelectedIndex: Int = 0,
     selectedColor: Color = CurrentColorPalette.primary,
     unSelectedColor: Color = primaryColor,
-    containerCorners:Dp = 16.dp,
-    selectedItemCorner:Dp = 16.dp,
+    containerCorners: Dp = 16.dp,
+    selectedItemCorner: Dp = 16.dp,
     onItemSelected: ((index: Int, item: String) -> Unit)? = null
 ) {
     var selectedIndex by remember { mutableStateOf(previouslySelectedIndex) }
@@ -205,7 +216,8 @@ fun RegularRadioGroup(options: Array<String>, onChanged: (value: String, index: 
 @Composable
 fun DefaultPreview3() {
     MedMateTheme {
-        FancyRadioGroup(options = arrayListOf("Hello", "Mello", "Test"),
+        FancyRadioGroup(
+            options = arrayListOf("Hello", "Mello", "Test"),
             containerCorners = 0.dp, previouslySelectedIndex = 1
         )
     }
