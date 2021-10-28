@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -197,28 +198,7 @@ class MedicineDetailsFragment : BottomSheetDialogFragment() {
         }
     }
 
-    @Composable
-    fun SimilarMedView(currentData: Medicine) {
-        Card(
-            elevation = 1.dp,
-            shape = RoundedCornerShape(16.dp),
-            border = BorderStroke(1.dp, CurrentColorPalette.primary),
-            modifier = Modifier
-                .padding(horizontal = 4.dp, vertical = 8.dp)
-                .width(IntrinsicSize.Max)
-                .clickable {
-                    getInstance(currentData).show(childFragmentManager, currentData.name)
-                }
-        ) {
-            Column {
-                Text(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-                    text = currentData.name + " ${currentData.strength ?: ""}",
-                    fontStyle = FontStyle.Italic,
-                )
-            }
-        }
-    }
+
 
     @Composable
     fun SimilarMedsListView(data: List<Medicine>, lazyListScope: LazyListScope) {
@@ -240,7 +220,7 @@ class MedicineDetailsFragment : BottomSheetDialogFragment() {
             LazyRow {
                 items(data)
                 { item ->
-                    SimilarMedView(currentData = item)
+                    SimilarMedView(currentData = item,this@MedicineDetailsFragment.childFragmentManager)
                 }
             }
         }
@@ -260,4 +240,29 @@ class MedicineDetailsFragment : BottomSheetDialogFragment() {
     }
 
 
+}
+
+@ExperimentalFoundationApi
+@Composable
+fun SimilarMedView(currentData: Medicine,fragmentManager: FragmentManager) {
+    Card(
+        elevation = 1.dp,
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.dp, CurrentColorPalette.primary),
+        modifier = Modifier
+            .padding(horizontal = 4.dp, vertical = 8.dp)
+            .width(IntrinsicSize.Max)
+            .clickable {
+                MedicineDetailsFragment.getInstance(currentData)
+                    .show(fragmentManager, currentData.name)
+            }
+    ) {
+        Column {
+            Text(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                text = currentData.name + " ${currentData.strength ?: ""}",
+                fontStyle = FontStyle.Italic,
+            )
+        }
+    }
 }

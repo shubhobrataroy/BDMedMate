@@ -42,10 +42,11 @@ class MedGenericsViewHolder () {
         }){
             Card(modifier = Modifier.fillMaxWidth(), elevation = 1.dp) {
                 Text(
-                    text = medGeneric.name, fontSize = 16.sp, modifier = Modifier.padding(
-                        horizontal = 4.dp,
-                        vertical = 8.dp
-                    )
+                    text = medGeneric.name, fontSize = 18.sp, modifier = Modifier.padding(
+                        horizontal = 8.dp,
+                        vertical = 16.dp,
+                    ),fontWeight = FontWeight.Bold,
+                    color = CurrentColorPalette.secondary
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
