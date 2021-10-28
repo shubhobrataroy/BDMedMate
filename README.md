@@ -1,5 +1,6 @@
 # BDMedMate
 
 
-https://user-images.githubusercontent.com/16903614/139188526-857ee9a2-23c1-41c2-a4f7-bc8a5ff1184d.mp4
 
+
+![ezgif com-gif-maker](https://user-images.githubusercontent.com/16903614/139189600-3aba9354-2301-49e4-9c0c-f5e07cf2ca84.gif)
