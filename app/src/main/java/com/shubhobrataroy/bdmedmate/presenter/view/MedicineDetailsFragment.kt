@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -31,7 +32,6 @@ import com.shubhobrataroy.bdmedmate.presenter.CommonState
 import com.shubhobrataroy.bdmedmate.presenter.ui.theme.CurrentColorPalette
 import com.shubhobrataroy.bdmedmate.presenter.ui.theme.MedMateTheme
 import com.shubhobrataroy.bdmedmate.presenter.viewmodel.MedicineListViewModel
-import com.shubhobrataroy.bdmedmate.ui.theme.Typography
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -126,7 +126,7 @@ class MedicineDetailsFragment : BottomSheetDialogFragment() {
             ) {
                 item {
                     Row {
-                        Text(text = medicine.name, style = Typography.h4)
+                        Text(text = medicine.name, style = MaterialTheme.typography.h4)
                         if (medicine.type != null)
                             Text(
                                 text = medicine.type,
@@ -199,7 +199,6 @@ class MedicineDetailsFragment : BottomSheetDialogFragment() {
     }
 
 
-
     @Composable
     fun SimilarMedsListView(data: List<Medicine>, lazyListScope: LazyListScope) {
 //        val iterationCount = 2
@@ -220,7 +219,10 @@ class MedicineDetailsFragment : BottomSheetDialogFragment() {
             LazyRow {
                 items(data)
                 { item ->
-                    SimilarMedView(currentData = item,this@MedicineDetailsFragment.childFragmentManager)
+                    SimilarMedView(
+                        currentData = item,
+                        this@MedicineDetailsFragment.childFragmentManager
+                    )
                 }
             }
         }
@@ -244,7 +246,7 @@ class MedicineDetailsFragment : BottomSheetDialogFragment() {
 
 @ExperimentalFoundationApi
 @Composable
-fun SimilarMedView(currentData: Medicine,fragmentManager: FragmentManager) {
+fun SimilarMedView(currentData: Medicine, fragmentManager: FragmentManager) {
     Card(
         elevation = 1.dp,
         shape = RoundedCornerShape(16.dp),
@@ -253,7 +255,8 @@ fun SimilarMedView(currentData: Medicine,fragmentManager: FragmentManager) {
             .padding(horizontal = 4.dp, vertical = 8.dp)
             .width(IntrinsicSize.Max)
             .clickable {
-                MedicineDetailsFragment.getInstance(currentData)
+                MedicineDetailsFragment
+                    .getInstance(currentData)
                     .show(fragmentManager, currentData.name)
             }
     ) {
