@@ -6,6 +6,7 @@ import androidx.lifecycle.*
 import com.shubhobrataroy.bdmedmate.domain.Country
 import com.shubhobrataroy.bdmedmate.domain.Repository
 import com.shubhobrataroy.bdmedmate.domain.execCatching
+import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 import com.shubhobrataroy.bdmedmate.domain.wrapWithState
 import com.shubhobrataroy.bdmedmate.presenter.CommonState
@@ -94,14 +95,6 @@ class MedicineListViewModel @Inject constructor(
 
         this.searchQueryState.value = searchQuery
 
-//        if (shouldDoLocalSearch(searchQuery, searchQueryState.value)) {
-//            this.searchQueryState.value = searchQuery
-//            performLocalSearch(searchQuery, _medListLiveData.getCalculatedValue())
-//        } else {
-//            this.searchQueryState.value = searchQuery
-//            fetchMedicineList()
-//        }
-
         _selectedCategoryItemList.execCatching {
             currentlySelectedOption.doIntelligentSearch(
                 searchQuery = searchQuery,
@@ -135,11 +128,6 @@ class MedicineListViewModel @Inject constructor(
         return if (value is CommonState.Success) value.data.list
         else emptyList()
     }
-
-    fun fetchSimilarMeds(medicine: Medicine) =
-        liveData(Dispatchers.IO) {
-            wrapWithState { medicine.similarMedicines() }
-        }
 
     fun selectCategory(index: Int) {
         Log.e("MEDLOG","on category selected")

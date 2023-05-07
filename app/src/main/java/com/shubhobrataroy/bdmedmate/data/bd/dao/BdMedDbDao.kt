@@ -7,6 +7,7 @@ import androidx.room.Transaction
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.shubhobrataroy.bdmedmate.data.bd.entity.*
 import com.shubhobrataroy.bdmedmate.data.bd.mapper.MedicineDetailed
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BdMedDbDao {
@@ -43,7 +44,7 @@ interface BdMedDbDao {
 
 
     @Query("select * from BRAND where generic_id = :genericId and form like :form and strength like :strength")
-    fun getMedicinesGenericId(genericId: String,form:String="", strength:String=""): List<MedicineEntity>
+    fun getMedicinesGenericId(genericId: String,form:String="", strength:String=""): Flow<List<MedicineEntity>>
 
 
     @Query("select * from BRAND where company_id = :companyId")

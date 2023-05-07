@@ -154,9 +154,13 @@ class MedicineDetailsFragment : BottomSheetDialogFragment() {
                 item {
                     CommonTitle(title = "Similar Medicines")
 
-                    SimilarMedicines(
-                        viewModel.fetchSimilarMeds(medicine).observeAsState(null), this@LazyColumn
-                    )
+                   if (medicine.similarMedicines!=null){
+                       val similarMeds by medicine.similarMedicines.collectAsState(null)
+                       SimilarMedsListView(similarMeds.orEmpty(), this@LazyColumn)
+                   }
+                    else{
+                        Text(text = "No Similar Medicine Found")
+                   }
                 }
             }
         }
@@ -228,19 +232,7 @@ class MedicineDetailsFragment : BottomSheetDialogFragment() {
         }
 
     }
-
-    @Composable
-    fun SimilarMedicines(
-        similarMeds: State<CommonState<List<Medicine>>?>,
-        lazyListScope: LazyListScope
-    ) {
-
-        similarMeds.value?.toComposable {
-            SimilarMedsListView(it, lazyListScope)
-        }
-
-    }
-
+    
 
 }
 

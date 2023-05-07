@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
@@ -77,8 +76,13 @@ fun DashboardPage(viewModel: MedicineListViewModel = hiltViewModel()) {
             sheetState = sheetState,
             sheetContent = {
                 when (currentBottomSheetState) {
-                    is DashboardBottomSheetState.GenericState -> {}
-                    is DashboardBottomSheetState.MedicineState -> MedicineDetails(
+                    is DashboardBottomSheetState.GenericState -> MedGenericsDetailsComposable(
+                        medGeneric = (currentBottomSheetState as DashboardBottomSheetState.GenericState).medicineGeneric
+                    ) {
+                        setState(DashboardBottomSheetState.MedicineState(it))
+                    }
+
+                    is DashboardBottomSheetState.MedicineState -> MedicineDetailsComposable(
                         medicineEntity = (currentBottomSheetState as DashboardBottomSheetState.MedicineState).medicine,
                         onSimilarMedicineClick = {
                             setState(DashboardBottomSheetState.MedicineState(it))
@@ -97,7 +101,9 @@ fun DashboardPage(viewModel: MedicineListViewModel = hiltViewModel()) {
                         Log.d("MedDetails",med.toString())
                         setState(DashboardBottomSheetState.MedicineState(med))
                     },
-                    onMedicineGenericDetailsRequested = {})
+                    onMedicineGenericDetailsRequested = {medGeneric->
+                        setState(DashboardBottomSheetState.GenericState(medGeneric))
+                    })
             }
         }
 

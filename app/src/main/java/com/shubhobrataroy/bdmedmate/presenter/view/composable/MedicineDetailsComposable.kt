@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -22,6 +21,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
@@ -93,18 +93,17 @@ fun MedicineItemView(
             item {
                 CommonTitle(title = "Similar Medicines")
 
-                val similarMedsState by remember{viewModel.fetchSimilarMeds(medicine)}.observeAsState(initial = null)
+                if (medicine.similarMedicines==null) return@item Text(text = "No similar medicines found")
 
-                similarMedsState?.toComposable { data->
+                val similarMeds by remember{medicine.similarMedicines}.collectAsState(initial = emptyList())
 
-                    LazyRow {
-                        items(data)
-                        { item ->
-                            SimilarMedView(
-                                currentData = item,
-                                onSimilarMedicineClick
-                            )
-                        }
+                LazyRow {
+                    items(similarMeds)
+                    { item ->
+                        SimilarMedView(
+                            currentData = item,
+                            onSimilarMedicineClick
+                        )
                     }
                 }
 
@@ -143,7 +142,6 @@ fun ItemExtraData(
 
 
 
-@ExperimentalFoundationApi
 @Composable
 fun SimilarMedView(currentData: Medicine, onSimilarMedClicked: (Medicine) -> Unit) {
     Card(
@@ -168,7 +166,7 @@ fun SimilarMedView(currentData: Medicine, onSimilarMedClicked: (Medicine) -> Uni
 }
 
 @Composable
-fun MedicineDetails(
+fun MedicineDetailsComposable(
     medicineEntity: Medicine,
     viewModel: MedicineListViewModel = hiltViewModel(),
     onSimilarMedicineClick: (Medicine) -> Unit

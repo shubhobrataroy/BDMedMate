@@ -12,6 +12,7 @@ import com.shubhobrataroy.bdmedmate.domain.MedDataSource
 import com.shubhobrataroy.bdmedmate.domain.model.Company
 import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
+import kotlinx.coroutines.flow.map
 
 @Database(
     entities = [MedicineEntity::class, MedGenericsEntity::class, CompanyEntity::class,
@@ -50,7 +51,10 @@ abstract class BDMedDatabase : RoomDatabase(), MedDataSource {
             .map { it.toMedicine() }
     }
 
-    override suspend fun getAllGenerics(genericSearchQuery:String ,byNameAsc: Boolean ): List<MedGeneric> {
+    override suspend fun getAllGenerics(
+        genericSearchQuery: String,
+        byNameAsc: Boolean
+    ): List<MedGeneric> {
 
         val orderLogic = buildString {
             append("generic_name ")
@@ -61,7 +65,8 @@ abstract class BDMedDatabase : RoomDatabase(), MedDataSource {
             append("generic_name like '%$genericSearchQuery%'")
         }
 
-        val query = SimpleSQLiteQuery("select * from generic where $whereLogic order by $orderLogic")
+        val query =
+            SimpleSQLiteQuery("select * from generic where $whereLogic order by $orderLogic")
 
 
         return dao.getAllMedGenericsData(query = query).map { it.toMedGeneric() }
@@ -91,11 +96,12 @@ abstract class BDMedDatabase : RoomDatabase(), MedDataSource {
                     ?: if (companyId == null) null
                     else dao.getCompanyDetailsByCompanyId(companyId).firstOrNull()?.toCompany()
             },
-            similarMedicines = {
-                if (genericId == null) emptyList()
-                else
-                    dao.getMedicinesGenericId(genericId,form?:"",strength = strength ?:"")
-                        .map { it.toMedicine() }
+            similarMedicines = genericId?.run {
+                dao.getMedicinesGenericId(
+                    this,
+                    form ?: "",
+                    strength = strength ?: ""
+                ).map { list -> list.map { medEntity -> medEntity.toMedicine() } }
             }
         )
     }
@@ -107,10 +113,10 @@ abstract class BDMedDatabase : RoomDatabase(), MedDataSource {
             indication,
             contraIndication = contraIndication,
             dosage = dose,
-            sideEffect = sideEffect
-        ) {
-            dao.getMedicinesGenericId(genericId).map { it.toMedicine() }
-        }
+            sideEffect = sideEffect,
+            medicines = dao.getMedicinesGenericId(genericId)
+                .map { list -> list.map { medEntity -> medEntity.toMedicine() } }
+        )
     }
 
     private fun CompanyEntity.toCompany() = Company(

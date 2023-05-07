@@ -12,4 +12,5 @@ interface Repository {
         byMedNameAsc: Boolean = true,) : List<Medicine>
 
     suspend fun getAllGenerics(searchQuery: String="", byNameAsc: Boolean=true, country: Country=Country.Bangladesh): List<MedGeneric>
+
 }
