@@ -55,7 +55,7 @@ fun MedGenericsDetailsComposable(
                 item {
                     val similarMeds = medGeneric.medicines?.collectAsState(initial = emptyList())
                     RelatedMedicines(
-                        modifier = Modifier.padding(horizontal =  8.dp),
+                        modifier = Modifier.padding(horizontal =8.dp),
                         similarMeds?.value.orEmpty(),
                         onSimilarMedicineClick
                     )
