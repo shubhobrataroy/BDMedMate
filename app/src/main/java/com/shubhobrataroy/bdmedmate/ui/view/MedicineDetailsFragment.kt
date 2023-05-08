@@ -1,4 +1,4 @@
-package com.shubhobrataroy.bdmedmate.presenter.view
+package com.shubhobrataroy.bdmedmate.ui.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,7 +18,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.FragmentManager
@@ -28,10 +27,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.shubhobrataroy.bdmedmate.domain.model.Company
 import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
-import com.shubhobrataroy.bdmedmate.presenter.CommonState
-import com.shubhobrataroy.bdmedmate.presenter.ui.theme.CurrentColorPalette
-import com.shubhobrataroy.bdmedmate.presenter.ui.theme.MedMateTheme
-import com.shubhobrataroy.bdmedmate.presenter.viewmodel.MedicineListViewModel
+import com.shubhobrataroy.bdmedmate.ui.CommonState
+import com.shubhobrataroy.bdmedmate.ui.ui.theme.CurrentColorPalette
+import com.shubhobrataroy.bdmedmate.ui.ui.theme.MedMateTheme
+import com.shubhobrataroy.bdmedmate.ui.viewmodel.MedicineListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 /**

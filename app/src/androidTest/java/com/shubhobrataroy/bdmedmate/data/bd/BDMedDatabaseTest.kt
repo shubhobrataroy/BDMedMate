@@ -2,11 +2,13 @@ package com.shubhobrataroy.bdmedmate.data.bd
 
 import android.app.Application
 import android.util.Log
+import androidx.compose.runtime.Composable
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.shubhobrataroy.bdmedmate.domain.MedDataSource
 import junit.framework.TestCase
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -80,7 +82,7 @@ class BDMedDatabaseTest : TestCase("BDDataSourceTest") {
                     )
                     missingCompanyForMeds.add(it.name)
                 }
-                if (it.similarMedicines().isNotEmpty()) {
+                if (it.similarMedicines?.firstOrNull().orEmpty().isNotEmpty()) {
                     Log.d(name, "Missing Similar Medicines.\nIndex:$index\nMedicine:$it")
                     missingSimilarMedForMeds.add(it.name)
                 }
@@ -94,9 +96,9 @@ class BDMedDatabaseTest : TestCase("BDDataSourceTest") {
 
                 Log.e(
                     name,
-                    "Missing Companies For:" + missingCompanyForMeds.joinToString(",") +"\n"+
-                            "Missing Generics For:" + missingGenericsForMeds.joinToString(",") +"\n"+
-                            "Missing Similar For:" + missingSimilarMedForMeds.joinToString(",")+"\n"
+                    "Missing Companies For:" + missingCompanyForMeds.joinToString(",") + "\n" +
+                            "Missing Generics For:" + missingGenericsForMeds.joinToString(",") + "\n" +
+                            "Missing Similar For:" + missingSimilarMedForMeds.joinToString(",") + "\n"
                 )
                 assert(missingCompanyForMeds.isNullOrEmpty())
                 assert(missingGenericsForMeds.isNullOrEmpty())
@@ -104,4 +106,17 @@ class BDMedDatabaseTest : TestCase("BDDataSourceTest") {
             }
         }
     }
+
+    @Test
+    fun testFindMedByGenerics() {
+        runBlocking {
+            val generics = db.getAllGenerics()
+            assert(generics.isEmpty()) { "No generics data" }
+            assert(generics[0].medicines?.firstOrNull().orEmpty().isEmpty()){
+                "No medicines found for ${generics[0].name}"
+            }
+        }
+    }
+
+
 }

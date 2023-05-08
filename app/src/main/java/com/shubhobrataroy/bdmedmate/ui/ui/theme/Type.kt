@@ -1,4 +1,4 @@
-package com.shubhobrataroy.bdmedmate.presenter.ui.theme
+package com.shubhobrataroy.bdmedmate.ui.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

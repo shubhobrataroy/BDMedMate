@@ -1,4 +1,4 @@
-package com.shubhobrataroy.bdmedmate.presenter.view
+package com.shubhobrataroy.bdmedmate.ui.view
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
-import com.shubhobrataroy.bdmedmate.presenter.ui.theme.MedMateTheme
+import com.shubhobrataroy.bdmedmate.ui.ui.theme.MedMateTheme
 
 class MedicineDetailsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

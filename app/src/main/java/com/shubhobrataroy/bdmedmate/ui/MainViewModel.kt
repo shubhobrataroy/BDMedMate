@@ -1,4 +1,4 @@
-package com.shubhobrataroy.bdmedmate.presenter
+package com.shubhobrataroy.bdmedmate.ui
 
 import androidx.lifecycle.ViewModel
 

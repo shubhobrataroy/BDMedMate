@@ -1,4 +1,4 @@
-package com.shubhobrataroy.bdmedmate.presenter.view.composable
+package com.shubhobrataroy.bdmedmate.ui.view.composable
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -33,13 +33,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.shubhobrataroy.bdmedmate.domain.model.Company
 import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
-import com.shubhobrataroy.bdmedmate.presenter.CommonState
-import com.shubhobrataroy.bdmedmate.presenter.ui.theme.CurrentColorPalette
-import com.shubhobrataroy.bdmedmate.presenter.view.CommonDivider
-import com.shubhobrataroy.bdmedmate.presenter.view.CommonTitle
-import com.shubhobrataroy.bdmedmate.presenter.view.MedGenericView
-import com.shubhobrataroy.bdmedmate.presenter.view.toComposable
-import com.shubhobrataroy.bdmedmate.presenter.viewmodel.MedicineListViewModel
+import com.shubhobrataroy.bdmedmate.ui.CommonState
+import com.shubhobrataroy.bdmedmate.ui.ui.theme.CurrentColorPalette
+import com.shubhobrataroy.bdmedmate.ui.view.CommonDivider
+import com.shubhobrataroy.bdmedmate.ui.view.CommonTitle
+import com.shubhobrataroy.bdmedmate.ui.view.MedGenericView
+import com.shubhobrataroy.bdmedmate.ui.view.toComposable
+import com.shubhobrataroy.bdmedmate.ui.viewmodel.MedicineListViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

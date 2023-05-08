@@ -2,7 +2,7 @@ package com.shubhobrataroy.bdmedmate.domain
 
 import androidx.lifecycle.LiveDataScope
 import androidx.lifecycle.MutableLiveData
-import com.shubhobrataroy.bdmedmate.presenter.CommonState
+import com.shubhobrataroy.bdmedmate.ui.CommonState
 import java.lang.Exception
 
 /**

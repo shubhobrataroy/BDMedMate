@@ -1,4 +1,4 @@
-package com.shubhobrataroy.bdmedmate.presenter.view.composable
+package com.shubhobrataroy.bdmedmate.ui.view.composable
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
@@ -28,16 +28,16 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
-import com.shubhobrataroy.bdmedmate.presenter.CommonState
-import com.shubhobrataroy.bdmedmate.presenter.ShowableListData
-import com.shubhobrataroy.bdmedmate.presenter.ui.theme.MedMateTheme
-import com.shubhobrataroy.bdmedmate.presenter.view.CommonDivider
-import com.shubhobrataroy.bdmedmate.presenter.view.FancyRadioGroup
-import com.shubhobrataroy.bdmedmate.presenter.view.MedGenericsViewHolder
-import com.shubhobrataroy.bdmedmate.presenter.view.MedicineListView
-import com.shubhobrataroy.bdmedmate.presenter.view.model.DashboardBottomSheetState
-import com.shubhobrataroy.bdmedmate.presenter.view.toComposable
-import com.shubhobrataroy.bdmedmate.presenter.viewmodel.MedicineListViewModel
+import com.shubhobrataroy.bdmedmate.ui.CommonState
+import com.shubhobrataroy.bdmedmate.ui.ShowableListData
+import com.shubhobrataroy.bdmedmate.ui.ui.theme.MedMateTheme
+import com.shubhobrataroy.bdmedmate.ui.view.CommonDivider
+import com.shubhobrataroy.bdmedmate.ui.view.FancyRadioGroup
+import com.shubhobrataroy.bdmedmate.ui.view.MedGenericsViewHolder
+import com.shubhobrataroy.bdmedmate.ui.view.MedicineListView
+import com.shubhobrataroy.bdmedmate.ui.view.model.DashboardBottomSheetState
+import com.shubhobrataroy.bdmedmate.ui.view.toComposable
+import com.shubhobrataroy.bdmedmate.ui.viewmodel.MedicineListViewModel
 import kotlinx.coroutines.launch
 
 

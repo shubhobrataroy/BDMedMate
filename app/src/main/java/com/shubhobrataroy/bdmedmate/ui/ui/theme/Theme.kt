@@ -1,4 +1,4 @@
-package com.shubhobrataroy.bdmedmate.presenter.ui.theme
+package com.shubhobrataroy.bdmedmate.ui.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme

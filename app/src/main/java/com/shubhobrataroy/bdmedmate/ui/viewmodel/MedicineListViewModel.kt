@@ -1,4 +1,4 @@
-package com.shubhobrataroy.bdmedmate.presenter.viewmodel
+package com.shubhobrataroy.bdmedmate.ui.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
@@ -6,11 +6,10 @@ import androidx.lifecycle.*
 import com.shubhobrataroy.bdmedmate.domain.Country
 import com.shubhobrataroy.bdmedmate.domain.Repository
 import com.shubhobrataroy.bdmedmate.domain.execCatching
-import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 import com.shubhobrataroy.bdmedmate.domain.wrapWithState
-import com.shubhobrataroy.bdmedmate.presenter.CommonState
-import com.shubhobrataroy.bdmedmate.presenter.ShowableListData
+import com.shubhobrataroy.bdmedmate.ui.CommonState
+import com.shubhobrataroy.bdmedmate.ui.ShowableListData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -69,19 +68,6 @@ class MedicineListViewModel @Inject constructor(
     }
 
 
-//    private fun performLocalSearch(query: String, existingList: List<Medicine>) {
-//        searchJob = viewModelScope.async(Dispatchers.Default) {
-//            _medListLiveData.execCatching {
-//                ShowableListData.MedicineShowableListData(existingList.filter {
-//                    it.name.contains(
-//                        query,
-//                        true
-//                    )
-//                })
-//            }
-//            query
-//        }
-//    }
 
     private fun shouldDoLocalSearch(latestQuery: String, oldQuery: String) =
         oldQuery.isNotEmpty() && latestQuery.startsWith(oldQuery) && _selectedCategoryItemList.value.run {

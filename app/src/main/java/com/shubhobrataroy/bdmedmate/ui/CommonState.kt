@@ -1,4 +1,4 @@
-package com.shubhobrataroy.bdmedmate.presenter
+package com.shubhobrataroy.bdmedmate.ui
 
 /**
  * Created by shubhobrataroy on 20,October,2021

@@ -1,4 +1,4 @@
-package com.shubhobrataroy.bdmedmate.presenter.view
+package com.shubhobrataroy.bdmedmate.ui.view
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -18,8 +18,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
-import com.shubhobrataroy.bdmedmate.presenter.ui.theme.CurrentColorPalette
-import com.shubhobrataroy.bdmedmate.presenter.ui.theme.MedMateTheme
+import com.shubhobrataroy.bdmedmate.ui.ui.theme.CurrentColorPalette
+import com.shubhobrataroy.bdmedmate.ui.ui.theme.MedMateTheme
 
 
 class MedGenericsViewHolder () {

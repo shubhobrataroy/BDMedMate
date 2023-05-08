@@ -1,11 +1,11 @@
-package com.shubhobrataroy.bdmedmate.presenter.view
+package com.shubhobrataroy.bdmedmate.ui.view
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.fragment.app.FragmentActivity
-import com.shubhobrataroy.bdmedmate.presenter.view.composable.MainNavComposable
+import com.shubhobrataroy.bdmedmate.ui.view.composable.MainNavComposable
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalAnimationApi

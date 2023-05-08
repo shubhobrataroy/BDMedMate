@@ -1,9 +1,9 @@
-package com.shubhobrataroy.bdmedmate.presenter.viewmodel
+package com.shubhobrataroy.bdmedmate.ui.viewmodel
 
 import com.shubhobrataroy.bdmedmate.domain.Country
 import com.shubhobrataroy.bdmedmate.domain.Repository
-import com.shubhobrataroy.bdmedmate.presenter.CommonState
-import com.shubhobrataroy.bdmedmate.presenter.ShowableListData
+import com.shubhobrataroy.bdmedmate.ui.CommonState
+import com.shubhobrataroy.bdmedmate.ui.ShowableListData
 
 abstract class Options(protected val repository: Repository,
                        protected val country: Country = Country.Bangladesh,

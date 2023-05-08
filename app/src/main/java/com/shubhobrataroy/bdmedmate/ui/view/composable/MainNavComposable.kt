@@ -1,4 +1,4 @@
-package com.shubhobrataroy.bdmedmate.presenter.view.composable
+package com.shubhobrataroy.bdmedmate.ui.view.composable
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost

@@ -1,4 +1,4 @@
-package com.shubhobrataroy.bdmedmate.presenter.view.model
+package com.shubhobrataroy.bdmedmate.ui.view.model
 
 import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine

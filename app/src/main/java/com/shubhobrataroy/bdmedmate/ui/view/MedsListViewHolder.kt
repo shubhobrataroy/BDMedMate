@@ -1,8 +1,6 @@
-package com.shubhobrataroy.bdmedmate.presenter.view
+package com.shubhobrataroy.bdmedmate.ui.view
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,8 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
-import com.shubhobrataroy.bdmedmate.presenter.CommonState
-import com.shubhobrataroy.bdmedmate.presenter.ui.theme.CurrentColorPalette
+import com.shubhobrataroy.bdmedmate.ui.ui.theme.CurrentColorPalette
 
 @Composable
 fun ItemExtraData(medicine: Medicine,onViewDetailsClicked:((Medicine)->Unit)?) {

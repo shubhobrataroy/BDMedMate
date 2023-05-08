@@ -1,4 +1,4 @@
-package com.shubhobrataroy.bdmedmate.presenter.view.composable
+package com.shubhobrataroy.bdmedmate.ui.view.composable
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -8,15 +8,13 @@ import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
-import com.shubhobrataroy.bdmedmate.presenter.ui.theme.MedMateTheme
-import com.shubhobrataroy.bdmedmate.presenter.view.CommonTitle
-import com.shubhobrataroy.bdmedmate.presenter.view.MedGenericView
-import kotlinx.coroutines.flow.onEmpty
+import com.shubhobrataroy.bdmedmate.ui.ui.theme.MedMateTheme
+import com.shubhobrataroy.bdmedmate.ui.view.CommonTitle
+import com.shubhobrataroy.bdmedmate.ui.view.MedGenericView
 
 @Composable
 fun RelatedMedicines(medicines: List<Medicine>, onMedicineClick: (Medicine) -> Unit) {

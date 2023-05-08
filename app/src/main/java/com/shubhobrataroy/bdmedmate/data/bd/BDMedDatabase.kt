@@ -89,7 +89,7 @@ abstract class BDMedDatabase : RoomDatabase(), MedDataSource {
                 genericsEntity?.toMedGeneric()
                     ?: if (genericId == null) null
                     else
-                        dao.getGenericById(genericId).firstOrNull()?.toMedGeneric()
+                        dao.getGenericById(genericId)?.toMedGeneric()
             },
             companyDetails = {
                 companyEntity?.toCompany()
@@ -97,10 +97,10 @@ abstract class BDMedDatabase : RoomDatabase(), MedDataSource {
                     else dao.getCompanyDetailsByCompanyId(companyId).firstOrNull()?.toCompany()
             },
             similarMedicines = genericId?.run {
-                dao.getMedicinesGenericId(
+                dao.getSimilarMedicine(
                     this,
-                    form ?: "",
-                    strength = strength ?: ""
+                    form ?: "%%",
+                    strength = strength ?: "%%"
                 ).map { list -> list.map { medEntity -> medEntity.toMedicine() } }
             }
         )
@@ -114,7 +114,7 @@ abstract class BDMedDatabase : RoomDatabase(), MedDataSource {
             contraIndication = contraIndication,
             dosage = dose,
             sideEffect = sideEffect,
-            medicines = dao.getMedicinesGenericId(genericId)
+            medicines = dao.getMedsByGenerics(genericId)
                 .map { list -> list.map { medEntity -> medEntity.toMedicine() } }
         )
     }
