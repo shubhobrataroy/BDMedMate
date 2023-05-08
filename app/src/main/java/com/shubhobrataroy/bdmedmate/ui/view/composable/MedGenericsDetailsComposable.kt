@@ -2,6 +2,7 @@ package com.shubhobrataroy.bdmedmate.ui.view.composable
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
@@ -17,8 +18,12 @@ import com.shubhobrataroy.bdmedmate.ui.view.CommonTitle
 import com.shubhobrataroy.bdmedmate.ui.view.MedGenericView
 
 @Composable
-fun RelatedMedicines(medicines: List<Medicine>, onMedicineClick: (Medicine) -> Unit) {
-    Column {
+fun RelatedMedicines(
+    modifier: Modifier,
+    medicines: List<Medicine>,
+    onMedicineClick: (Medicine) -> Unit
+) {
+    Column(modifier = modifier) {
         CommonTitle(title = "Medicines")
         if (medicines.isEmpty()) Text(text = "No medicines found")
         else LazyRow {
@@ -31,9 +36,6 @@ fun RelatedMedicines(medicines: List<Medicine>, onMedicineClick: (Medicine) -> U
 }
 
 
-
-
-
 @Composable
 fun MedGenericsDetailsComposable(
     medGeneric: MedGeneric,
@@ -41,17 +43,23 @@ fun MedGenericsDetailsComposable(
 ) {
     MedMateTheme {
         Card(elevation = 0.dp) {
-            Column {
-                MedGenericView(
-                    medGeneric = medGeneric,
-                    true,
-                    modifier = Modifier.padding(8.dp)
-                )
+            LazyColumn {
+                item {
+                    MedGenericView(
+                        medGeneric = medGeneric,
+                        true,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
 
-
-                val similarMeds = medGeneric.medicines?.collectAsState(initial = emptyList())
-
-                RelatedMedicines(similarMeds?.value.orEmpty(),onSimilarMedicineClick)
+                item {
+                    val similarMeds = medGeneric.medicines?.collectAsState(initial = emptyList())
+                    RelatedMedicines(
+                        modifier = Modifier.padding(horizontal =  8.dp),
+                        similarMeds?.value.orEmpty(),
+                        onSimilarMedicineClick
+                    )
+                }
             }
 
         }
