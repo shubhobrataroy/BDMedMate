@@ -33,8 +33,6 @@ import com.shubhobrataroy.bdmedmate.ui.ShowableListData
 import com.shubhobrataroy.bdmedmate.ui.ui.theme.MedMateTheme
 import com.shubhobrataroy.bdmedmate.ui.view.CommonDivider
 import com.shubhobrataroy.bdmedmate.ui.view.FancyRadioGroup
-import com.shubhobrataroy.bdmedmate.ui.view.MedGenericsViewHolder
-import com.shubhobrataroy.bdmedmate.ui.view.MedicineListView
 import com.shubhobrataroy.bdmedmate.ui.view.model.DashboardBottomSheetState
 import com.shubhobrataroy.bdmedmate.ui.view.toComposable
 import com.shubhobrataroy.bdmedmate.ui.viewmodel.MedicineListViewModel
@@ -128,7 +126,7 @@ fun DashboardContent(
         state.toComposable {
             when (it) {
                 is ShowableListData.MedicineGenericShowableListData -> {
-                    MedGenericsViewHolder().MedicineGenericListView(
+                    MedicineGenericListView(
                         it.list,
                         onMedicineGenericDetailsRequested
                     )
@@ -200,7 +198,7 @@ fun SearchHeader(
             }
             CommonDivider(verticalSpace = 16.dp)
 
-            FancyRadioGroup(arrayListOf("A to Z", "Z to A")) { index, value ->
+            FancyRadioGroup(options =  arrayListOf("A to Z", "Z to A")) { index, value ->
                 viewModel.onListOrderSelected(index)
             }
         }

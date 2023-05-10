@@ -1,4 +1,4 @@
-package com.shubhobrataroy.bdmedmate.ui.view
+package com.shubhobrataroy.bdmedmate.ui.view.composable
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
@@ -17,9 +17,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 import com.shubhobrataroy.bdmedmate.ui.ui.theme.CurrentColorPalette
+import com.shubhobrataroy.bdmedmate.ui.view.CommonDivider
 
 @Composable
-fun ItemExtraData(medicine: Medicine,onViewDetailsClicked:((Medicine)->Unit)?) {
+fun MedicineViewDetailsButton(medicine: Medicine,onViewDetailsClicked:((Medicine)->Unit)?) {
 
     Column {
         Spacer(
@@ -95,14 +96,9 @@ fun MedicineItemView(medicine: Medicine,onViewDetailsClicked:((Medicine)->Unit)?
                 )
             }
 
-
-
-
             AnimatedVisibility(visible = clicked) {
-                ItemExtraData(medicine = medicine,onViewDetailsClicked)
+                MedicineViewDetailsButton(medicine = medicine,onViewDetailsClicked)
             }
-
-
         }
     }
 }

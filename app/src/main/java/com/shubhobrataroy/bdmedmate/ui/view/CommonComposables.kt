@@ -137,8 +137,8 @@ fun <T : Any> CommonState<T>.toComposable(
 
 @Composable
 fun FancyRadioGroup(
+    modifier: Modifier =  Modifier.fillMaxWidth(),
     options: List<String>,
-    modifier: Modifier? = null,
     primaryColor: Color = MaterialTheme.colors.surface,
     previouslySelectedIndex: Int = 0,
     selectedColor: Color = CurrentColorPalette.primary,
@@ -150,7 +150,7 @@ fun FancyRadioGroup(
     var selectedIndex by remember { mutableStateOf(previouslySelectedIndex) }
     Card(
         shape = RoundedCornerShape(containerCorners),
-        modifier = modifier ?: Modifier.fillMaxWidth(),
+        modifier = modifier,
     ) {
         Row(
             Modifier.background(primaryColor),

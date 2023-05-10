@@ -34,10 +34,8 @@ class BDMedDatabaseTest : TestCase("BDDataSourceTest") {
     @Test
     fun testGetAllMedicines() {
         runBlocking {
-            db.getAllMedicines().let {
-                assert(it.isNotEmpty()) {
-                    commonEmptyListMsg
-                }
+            assert(db.getAllMedicines().isNotEmpty()) {
+                commonEmptyListMsg
             }
         }
     }
@@ -45,10 +43,8 @@ class BDMedDatabaseTest : TestCase("BDDataSourceTest") {
     @Test
     fun testGetAllGenerics() {
         runBlocking {
-            db.getAllGenerics().let {
-                assert(it.isNotEmpty()) {
-                    commonEmptyListMsg
-                }
+            assert(db.getAllGenerics().isNotEmpty()) {
+                commonEmptyListMsg
             }
         }
     }

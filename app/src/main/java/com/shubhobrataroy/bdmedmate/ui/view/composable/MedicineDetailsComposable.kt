@@ -41,9 +41,8 @@ import com.shubhobrataroy.bdmedmate.ui.view.MedGenericView
 import com.shubhobrataroy.bdmedmate.ui.view.toComposable
 import com.shubhobrataroy.bdmedmate.ui.viewmodel.MedicineListViewModel
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MedicineItemView(
+fun MedicineView(
     medicine: Medicine,
     viewModel: MedicineListViewModel = hiltViewModel(),
     onSimilarMedicineClick: (Medicine) -> Unit
@@ -172,6 +171,6 @@ fun MedicineDetailsComposable(
     onSimilarMedicineClick: (Medicine) -> Unit
 ) {
     Card(shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)) {
-        MedicineItemView(medicineEntity, viewModel, onSimilarMedicineClick)
+        MedicineView(medicineEntity, viewModel, onSimilarMedicineClick)
     }
 }
