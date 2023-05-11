@@ -10,6 +10,9 @@ import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 import com.shubhobrataroy.bdmedmate.domain.wrapWithState
 import com.shubhobrataroy.bdmedmate.ui.CommonState
 import com.shubhobrataroy.bdmedmate.ui.ShowableListData
+import com.shubhobrataroy.bdmedmate.ui.viewmodel.showableListHandler.GenericListHandler
+import com.shubhobrataroy.bdmedmate.ui.viewmodel.showableListHandler.MedicineListHandler
+import com.shubhobrataroy.bdmedmate.ui.viewmodel.showableListHandler.ShowableListHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -24,16 +27,16 @@ class MedicineListViewModel @Inject constructor(
 
     private val country = Country.Bangladesh
 
-    private val options: List<Options> by lazy {
+    private val listHandlers: List<ShowableListHandler> by lazy {
         arrayListOf(
-            MedicineListOption(repository, country),
-            GenericListOption(repository, country, ),
-            MedicineListOption(repository, country, ),
+            MedicineListHandler(repository, country),
+            GenericListHandler(repository, country, ),
+            MedicineListHandler(repository, country, ),
         )
     }
 
     @Volatile
-    private var currentlySelectedOption = options[0]
+    private var currentlySelectedOption = listHandlers[0]
 
 
     private val _selectedCategoryItemList =
@@ -85,7 +88,7 @@ class MedicineListViewModel @Inject constructor(
             currentlySelectedOption.doIntelligentSearch(
                 searchQuery = searchQuery,
                 _selectedCategoryItemList.value
-            ) ?: currentlySelectedOption.getOptionDataByPresets()
+            ) ?: currentlySelectedOption.getAllShowableLists()
         }
 
         val latestQuery = this.searchQueryState.value
@@ -119,7 +122,7 @@ class MedicineListViewModel @Inject constructor(
         Log.e("MEDLOG","on category selected")
         val value = searchQueryState.value
         searchJob = viewModelScope.async(Dispatchers.IO) {
-            currentlySelectedOption = options[index]
+            currentlySelectedOption = listHandlers[index]
             currentlySelectedOption.setNewListOrder(this@MedicineListViewModel.listAsc)
             _selectedCategoryItemList.execCatching {
                 currentlySelectedOption.doIntelligentSearch(
@@ -135,7 +138,7 @@ class MedicineListViewModel @Inject constructor(
        viewModelScope.launch(Dispatchers.IO) {
            _selectedCategoryItemList.execCatching {
                 currentlySelectedOption.run {
-                    getOptionDataByPresets()
+                    getAllShowableLists()
                 }
            }
        }

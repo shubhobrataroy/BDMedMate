@@ -1,4 +1,4 @@
-package com.shubhobrataroy.bdmedmate.ui.viewmodel
+package com.shubhobrataroy.bdmedmate.ui.viewmodel.showableListHandler
 
 import android.util.Log
 import com.shubhobrataroy.bdmedmate.domain.Country
@@ -6,16 +6,16 @@ import com.shubhobrataroy.bdmedmate.domain.Repository
 import com.shubhobrataroy.bdmedmate.ui.CommonState
 import com.shubhobrataroy.bdmedmate.ui.ShowableListData
 
-class MedicineListOption constructor(
+class MedicineListHandler constructor(
     repository: Repository,
     country: Country = Country.Bangladesh,
     isAscOrder : Boolean = true
-) : Options(repository,country, "Medicine", isAscOrder) {
+) : ShowableListHandler(repository,country, "Medicine", isAscOrder) {
     private var searchQuery = ""
 
     private var lastSuccessfulSearchQuery = ""
 
-    override suspend fun getOptionDataByPresets(): ShowableListData {
+    override suspend fun getAllShowableLists(): ShowableListData {
         Log.d("MEDLOG","Med Repo Search")
         val list = repository.getAllMedicinesByCountry(
             searchQuery,
@@ -28,7 +28,7 @@ class MedicineListOption constructor(
 
     override suspend fun searchItemFromRepo(searchQuery: String): ShowableListData {
         this.searchQuery = searchQuery
-        return getOptionDataByPresets()
+        return getAllShowableLists()
     }
 
     override suspend fun searchItemLocally(
@@ -61,7 +61,7 @@ class MedicineListOption constructor(
     ): ShowableListData {
         Log.d("MEDLOG","Med Repo Search")
         return when (commonState) {
-            is CommonState.Error, null, CommonState.Idle, CommonState.Fetching -> getOptionDataByPresets()
+            is CommonState.Error, null, CommonState.Idle, CommonState.Fetching -> getAllShowableLists()
             is CommonState.Success -> {
                 if (commonState.data is ShowableListData.MedicineShowableListData) {
                     val list = commonState.data.list

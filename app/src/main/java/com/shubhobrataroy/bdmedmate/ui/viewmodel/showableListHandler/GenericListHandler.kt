@@ -1,4 +1,4 @@
-package com.shubhobrataroy.bdmedmate.ui.viewmodel
+package com.shubhobrataroy.bdmedmate.ui.viewmodel.showableListHandler
 
 import android.util.Log
 import com.shubhobrataroy.bdmedmate.domain.Country
@@ -6,24 +6,24 @@ import com.shubhobrataroy.bdmedmate.domain.Repository
 import com.shubhobrataroy.bdmedmate.ui.CommonState
 import com.shubhobrataroy.bdmedmate.ui.ShowableListData
 
-class GenericListOption(
+class GenericListHandler(
     repository: Repository,
     country: Country = Country.Bangladesh,
     isAscOrder : Boolean = true
-) :Options(repository,country, "Generic", isAscOrder) {
+) : ShowableListHandler(repository,country, "Generic", isAscOrder) {
 
     private var searchQuery = ""
 
     private var lastSuccessfulSearchQuery = ""
 
-    override suspend fun getOptionDataByPresets(): ShowableListData {
+    override suspend fun getAllShowableLists(): ShowableListData {
        return ShowableListData.MedicineGenericShowableListData(repository.getAllGenerics(country= country,searchQuery = searchQuery,byNameAsc = isAscOrder))
     }
 
     override suspend fun searchItemFromRepo(searchQuery: String): ShowableListData {
         Log.d("GenericSearch","Repo Search")
         this.searchQuery = searchQuery
-        val optionDataByPresets = getOptionDataByPresets()
+        val optionDataByPresets = getAllShowableLists()
         lastSuccessfulSearchQuery = searchQuery
         return  optionDataByPresets
     }
@@ -34,7 +34,7 @@ class GenericListOption(
     ): ShowableListData {
         Log.d("MEDLOG","Generic Local Search")
         this.searchQuery = searchQuery
-        val optionDataByPresets = getOptionDataByPresets()
+        val optionDataByPresets = getAllShowableLists()
         lastSuccessfulSearchQuery = searchQuery
         return  optionDataByPresets
     }
@@ -52,7 +52,7 @@ class GenericListOption(
                    searchItemLocally(searchQuery,commonState.data)
                else searchItemFromRepo(searchQuery)
            }
-           else getOptionDataByPresets()
+           else getAllShowableLists()
        }else null
     }
 
