@@ -6,8 +6,9 @@ import androidx.lifecycle.*
 import com.shubhobrataroy.bdmedmate.domain.Country
 import com.shubhobrataroy.bdmedmate.domain.Repository
 import com.shubhobrataroy.bdmedmate.domain.execCatching
+import com.shubhobrataroy.bdmedmate.domain.model.Company
+import com.shubhobrataroy.bdmedmate.domain.model.Generic
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
-import com.shubhobrataroy.bdmedmate.domain.wrapWithState
 import com.shubhobrataroy.bdmedmate.ui.CommonState
 import com.shubhobrataroy.bdmedmate.ui.ShowableListData
 import com.shubhobrataroy.bdmedmate.ui.viewmodel.showableListHandler.GenericListHandler
@@ -15,6 +16,8 @@ import com.shubhobrataroy.bdmedmate.ui.viewmodel.showableListHandler.MedicineLis
 import com.shubhobrataroy.bdmedmate.ui.viewmodel.showableListHandler.ShowableListHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 /**
@@ -53,12 +56,9 @@ class MedicineListViewModel @Inject constructor(
 
 
 
-    fun getGenericsAndCompanyDetails(medicine: Medicine) =
-        liveData(Dispatchers.IO) {
-            this.wrapWithState {
-                medicine.genericFetcher() to medicine.companyDetails()
-            }
-        }
+    fun getGenericsAndCompanyDetails(medicine: Medicine) = flow<Pair<Generic?,Company?>> {
+        medicine.generic?.firstOrNull() to medicine.companyDetails?.firstOrNull()
+    }
 
     fun onListOrderSelected(index: Int) {
         viewModelScope.launch(Dispatchers.IO) {

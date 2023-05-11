@@ -1,7 +1,7 @@
 package com.shubhobrataroy.bdmedmate.domain
 
 import com.shubhobrataroy.bdmedmate.domain.model.Company
-import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
+import com.shubhobrataroy.bdmedmate.domain.model.Generic
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 
 /**
@@ -9,6 +9,6 @@ import com.shubhobrataroy.bdmedmate.domain.model.Medicine
  **/
 interface MedDataSource {
     suspend fun getAllMedicines(medSearchQuery: String="", byMedNameAsc: Boolean = true): List<Medicine>
-    suspend fun getAllGenerics(genericSearchQuery:String ="",byNameAsc: Boolean = true): List<MedGeneric>
+    suspend fun getAllGenerics(genericSearchQuery:String ="",byNameAsc: Boolean = true): List<Generic>
     suspend fun getAllCompany(): List<Company>
 }

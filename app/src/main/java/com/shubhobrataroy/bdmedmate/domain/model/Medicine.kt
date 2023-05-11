@@ -16,9 +16,9 @@ data class Medicine(
 
     val companyName: String? = null,
 
-    val genericFetcher: suspend () -> MedGeneric? = { null },
+    val generic: Flow<Generic?>? = null,
 
     val similarMedicines: Flow<List<Medicine>>? = null,
 
-    val companyDetails: suspend () -> Company? = { null }
+    val companyDetails: Flow<Company>? = null
 )

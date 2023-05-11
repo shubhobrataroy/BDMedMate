@@ -40,7 +40,7 @@ interface BdMedDbDao {
     fun getAllIndications(): List<IndicationsEntity>
 
     @Query("select * from generic where generic_id = :genericId")
-    fun getGenericById(genericId: String): MedGenericsEntity?
+    fun getGenericById(genericId: String): Flow<MedGenericsEntity?>
 
 
     @Query("select * from BRAND where generic_id = :genericId and form like :form and strength like :strength")
@@ -53,7 +53,7 @@ interface BdMedDbDao {
     fun getMedicinesCompanyId(companyId: String): List<MedicineEntity>
 
     @Query("select * from COMPANY_NAME where company_id = :companyId")
-    fun getCompanyDetailsByCompanyId(companyId: String): List<CompanyEntity>
+    fun getCompanyDetailsByCompanyId(companyId: String): Flow<CompanyEntity>
 
     @Query("select * from BRAND where generic_id = :genericId and brand_id != :excludeMedId")
     fun getOtherSimilarMedicines(

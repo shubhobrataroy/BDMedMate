@@ -34,7 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
+import com.shubhobrataroy.bdmedmate.domain.model.Generic
 import com.shubhobrataroy.bdmedmate.ui.CommonState
 import com.shubhobrataroy.bdmedmate.ui.ui.theme.CurrentColorPalette
 import com.shubhobrataroy.bdmedmate.ui.ui.theme.MedMateTheme
@@ -93,28 +93,28 @@ fun Paragraph(title: String, paragraph: String?) {
 
 @Composable
 fun MedGenericView(
-    medGeneric: MedGeneric,
+    generic: Generic,
     isGenericMainView: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier){
         if (!isGenericMainView)
             Text(
-                text = medGeneric.name,
+                text = generic.name,
                 fontStyle = FontStyle.Italic,
                 fontWeight = FontWeight.Bold,
                 color = CurrentColorPalette.secondary
             )
         else
             Text(
-                text = medGeneric.name,
+                text = generic.name,
                 style = MaterialTheme.typography.h5,
                 color = CurrentColorPalette.secondary
             )
         CommonDivider()
-        Paragraph(title = "Dosage", medGeneric.dosage)
-        Paragraph(title = "Indication", medGeneric.indication)
-        Paragraph(title = "Side Effect", paragraph = medGeneric.sideEffect)
+        Paragraph(title = "Dosage", generic.dosage)
+        Paragraph(title = "Indication", generic.indication)
+        Paragraph(title = "Side Effect", paragraph = generic.sideEffect)
 
     }
 }

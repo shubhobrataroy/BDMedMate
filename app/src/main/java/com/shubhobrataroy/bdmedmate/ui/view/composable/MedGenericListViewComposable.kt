@@ -17,33 +17,33 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
+import com.shubhobrataroy.bdmedmate.domain.model.Generic
 import com.shubhobrataroy.bdmedmate.ui.ui.theme.CurrentColorPalette
 import com.shubhobrataroy.bdmedmate.ui.ui.theme.MedMateTheme
 
 
 @Composable
-fun MedicineGenericListView(list: List<MedGeneric>, onItemClicked: (medGeneric:MedGeneric ) ->Unit)
+fun MedicineGenericListView(list: List<Generic>, onItemClicked: (generic:Generic ) ->Unit)
 {
     LazyColumn(contentPadding = PaddingValues(horizontal = 4.dp,
         vertical = 8.dp))
     {
         items(list) {
-            MedicineGenericItemView(medGeneric = it,onItemClicked)
+            MedicineGenericItemView(generic = it,onItemClicked)
         }
     }
 }
 
 
 @Composable
-fun MedicineGenericItemView(medGeneric: MedGeneric ,  onItemClicked: ( medGeneric:MedGeneric ) ->Unit)
+fun MedicineGenericItemView(generic: Generic, onItemClicked: (generic:Generic ) ->Unit)
 {
     Column (Modifier.clickable {
-        onItemClicked(medGeneric)
+        onItemClicked(generic)
     }){
         Card(modifier = Modifier.fillMaxWidth(), elevation = 1.dp) {
             Text(
-                text = medGeneric.name, fontSize = 18.sp, modifier = Modifier.padding(
+                text = generic.name, fontSize = 18.sp, modifier = Modifier.padding(
                     horizontal = 8.dp,
                     vertical = 16.dp,
                 ),fontWeight = FontWeight.Bold,
@@ -58,9 +58,9 @@ fun MedicineGenericItemView(medGeneric: MedGeneric ,  onItemClicked: ( medGeneri
 @Composable
 fun MedGenerics() {
 
-    val medGeneric = MedGeneric("Azythomycin")
+    val generic = Generic("Azythomycin")
     MedMateTheme {
-        MedicineGenericListView(listOf(medGeneric,medGeneric),){}
+        MedicineGenericListView(listOf(generic,generic),){}
     }
 }
 

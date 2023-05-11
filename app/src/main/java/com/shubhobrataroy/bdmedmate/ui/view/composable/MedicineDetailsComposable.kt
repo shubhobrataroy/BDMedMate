@@ -1,7 +1,6 @@
 package com.shubhobrataroy.bdmedmate.ui.view.composable
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -20,10 +19,8 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
@@ -31,14 +28,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.shubhobrataroy.bdmedmate.domain.model.Company
-import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
+import com.shubhobrataroy.bdmedmate.domain.model.Generic
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
-import com.shubhobrataroy.bdmedmate.ui.CommonState
 import com.shubhobrataroy.bdmedmate.ui.ui.theme.CurrentColorPalette
 import com.shubhobrataroy.bdmedmate.ui.view.CommonDivider
 import com.shubhobrataroy.bdmedmate.ui.view.CommonTitle
 import com.shubhobrataroy.bdmedmate.ui.view.MedGenericView
-import com.shubhobrataroy.bdmedmate.ui.view.toComposable
 import com.shubhobrataroy.bdmedmate.ui.viewmodel.MedicineListViewModel
 
 @Composable
@@ -81,9 +76,12 @@ fun MedicineView(
             }
 
             item {
+                val genericData :Generic? =medicine.generic?.collectAsState(initial = null)?.value
+                val companyDetails =medicine.companyDetails?.collectAsState(initial = null)?.value
+
                 ItemExtraData(
-                    viewModel.getGenericsAndCompanyDetails(medicine)
-                        .observeAsState(initial = null)
+                    genericData,
+                    companyDetails
                 )
             }
 
@@ -113,28 +111,25 @@ fun MedicineView(
 
 @Composable
 fun ItemExtraData(
-    state: State<CommonState<Pair<MedGeneric?, Company?>>?>
+    genericsEntity: Generic?,
+    company: Company?
 ) {
 
-    state.value?.toComposable {
-        val (genericsEntity, company) = it
+    Column {
+        CommonDivider()
 
-        Column {
-            CommonDivider()
+        if (company != null)
+            Text(text = company.name)
 
-            if (company != null)
-                Text(text = company.name)
-
-            if (genericsEntity != null)
-                MedGenericView(medGeneric = genericsEntity)
+        if (genericsEntity != null)
+            MedGenericView(generic = genericsEntity)
 
 
-            Spacer(
-                modifier = Modifier
-                    .height(24.dp),
-            )
+        Spacer(
+            modifier = Modifier
+                .height(24.dp),
+        )
 
-        }
     }
 }
 

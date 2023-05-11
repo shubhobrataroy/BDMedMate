@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
+import com.shubhobrataroy.bdmedmate.domain.model.Generic
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 import com.shubhobrataroy.bdmedmate.ui.ui.theme.MedMateTheme
 import com.shubhobrataroy.bdmedmate.ui.view.CommonTitle
@@ -38,7 +38,7 @@ fun RelatedMedicines(
 
 @Composable
 fun MedGenericsDetailsComposable(
-    medGeneric: MedGeneric,
+    generic: Generic,
     onSimilarMedicineClick: (Medicine) -> Unit
 ) {
     MedMateTheme {
@@ -46,14 +46,14 @@ fun MedGenericsDetailsComposable(
             LazyColumn {
                 item {
                     MedGenericView(
-                        medGeneric = medGeneric,
+                        generic = generic,
                         true,
                         modifier = Modifier.padding(8.dp)
                     )
                 }
 
                 item {
-                    val similarMeds = medGeneric.medicines?.collectAsState(initial = emptyList())
+                    val similarMeds = generic.medicines?.collectAsState(initial = emptyList())
                     RelatedMedicines(
                         modifier = Modifier.padding(horizontal =8.dp),
                         similarMeds?.value.orEmpty(),

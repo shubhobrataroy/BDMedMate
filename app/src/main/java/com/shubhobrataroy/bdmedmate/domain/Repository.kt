@@ -1,6 +1,6 @@
 package com.shubhobrataroy.bdmedmate.domain
 
-import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
+import com.shubhobrataroy.bdmedmate.domain.model.Generic
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 
 interface Repository {
@@ -11,6 +11,6 @@ interface Repository {
         country: Country,
         byMedNameAsc: Boolean = true,) : List<Medicine>
 
-    suspend fun getAllGenerics(searchQuery: String="", byNameAsc: Boolean=true, country: Country=Country.Bangladesh): List<MedGeneric>
+    suspend fun getAllGenerics(searchQuery: String="", byNameAsc: Boolean=true, country: Country=Country.Bangladesh): List<Generic>
 
 }

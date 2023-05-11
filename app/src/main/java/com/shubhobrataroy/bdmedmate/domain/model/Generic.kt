@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Created by shubhobrataroy on 20,October,2021
  **/
-data class MedGeneric(
+data class Generic(
     val name: String,
     val indication:String?=null,
     val contraIndication:String?=null,

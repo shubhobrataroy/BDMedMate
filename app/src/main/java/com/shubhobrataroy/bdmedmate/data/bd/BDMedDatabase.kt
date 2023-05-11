@@ -10,7 +10,7 @@ import com.shubhobrataroy.bdmedmate.data.bd.entity.*
 import com.shubhobrataroy.bdmedmate.data.bd.mapper.MedicineDetailed
 import com.shubhobrataroy.bdmedmate.domain.MedDataSource
 import com.shubhobrataroy.bdmedmate.domain.model.Company
-import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
+import com.shubhobrataroy.bdmedmate.domain.model.Generic
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 import kotlinx.coroutines.flow.map
 
@@ -54,7 +54,7 @@ abstract class BDMedDatabase : RoomDatabase(), MedDataSource {
     override suspend fun getAllGenerics(
         genericSearchQuery: String,
         byNameAsc: Boolean
-    ): List<MedGeneric> {
+    ): List<Generic> {
 
         val orderLogic = buildString {
             append("generic_name ")
@@ -85,16 +85,11 @@ abstract class BDMedDatabase : RoomDatabase(), MedDataSource {
         return Medicine(brandName ?: "", form, strength,
             genericName = genericsEntity?.genericName,
             companyName = companyEntity?.companyName,
-            genericFetcher = {
-                genericsEntity?.toMedGeneric()
-                    ?: if (genericId == null) null
-                    else
-                        dao.getGenericById(genericId)?.toMedGeneric()
-            },
-            companyDetails = {
-                companyEntity?.toCompany()
-                    ?: if (companyId == null) null
-                    else dao.getCompanyDetailsByCompanyId(companyId).firstOrNull()?.toCompany()
+            generic = genericId?.let { genericId->dao.getGenericById(genericId).map{
+                it?.toMedGeneric()
+            } },
+            companyDetails = companyId?.let { companyId->
+                dao.getCompanyDetailsByCompanyId(companyId).map { it.toCompany() }
             },
             similarMedicines = genericId?.run {
                 dao.getSimilarMedicine(
@@ -107,8 +102,8 @@ abstract class BDMedDatabase : RoomDatabase(), MedDataSource {
     }
 
 
-    private fun MedGenericsEntity.toMedGeneric(): MedGeneric {
-        return MedGeneric(
+    private fun MedGenericsEntity.toMedGeneric(): Generic {
+        return Generic(
             genericName ?: "",
             indication,
             contraIndication = contraIndication,

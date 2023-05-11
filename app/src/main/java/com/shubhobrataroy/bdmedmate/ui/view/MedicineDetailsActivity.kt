@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
+import com.shubhobrataroy.bdmedmate.domain.model.Generic
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 import com.shubhobrataroy.bdmedmate.ui.ui.theme.MedMateTheme
 
@@ -37,7 +37,7 @@ class MedicineDetailsActivity : ComponentActivity() {
 }
 
 @Composable
-fun MedicineDetails(medicineEntity: Medicine, genericsEntity: MedGeneric) {
+fun MedicineDetails(medicineEntity: Medicine, genericsEntity: Generic) {
     Column(
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -85,7 +85,7 @@ fun DefaultPreview2() {
             Medicine(
                 "ABC Medicine", "Syrup","250 mg",
             ),
-            MedGeneric("Azythomycin")
+            Generic("Azythomycin")
         )
     }
 }

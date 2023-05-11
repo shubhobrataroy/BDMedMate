@@ -26,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.shubhobrataroy.bdmedmate.domain.model.MedGeneric
+import com.shubhobrataroy.bdmedmate.domain.model.Generic
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 import com.shubhobrataroy.bdmedmate.ui.CommonState
 import com.shubhobrataroy.bdmedmate.ui.ShowableListData
@@ -75,7 +75,7 @@ fun DashboardPage(viewModel: MedicineListViewModel = hiltViewModel()) {
             sheetContent = {
                 when (currentBottomSheetState) {
                     is DashboardBottomSheetState.GenericState -> MedGenericsDetailsComposable(
-                        medGeneric = (currentBottomSheetState as DashboardBottomSheetState.GenericState).medicineGeneric
+                        generic = (currentBottomSheetState as DashboardBottomSheetState.GenericState).medicineGeneric
                     ) {
                         setState(DashboardBottomSheetState.MedicineState(it))
                     }
@@ -115,7 +115,7 @@ fun DashboardContent(
     modifier: Modifier = Modifier,
     viewModel: MedicineListViewModel = hiltViewModel(),
     onMedicineDetailsRequested: (Medicine) -> Unit,
-    onMedicineGenericDetailsRequested: (MedGeneric) -> Unit
+    onMedicineGenericDetailsRequested: (Generic) -> Unit
 ) {
     val state by viewModel.selectedCategoryItemShowableList.observeAsState(CommonState.Idle)
 
