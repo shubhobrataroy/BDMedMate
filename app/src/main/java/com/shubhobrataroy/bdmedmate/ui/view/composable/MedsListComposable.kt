@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -16,7 +17,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
-import com.shubhobrataroy.bdmedmate.ui.ui.theme.CurrentColorPalette
 import com.shubhobrataroy.bdmedmate.ui.view.CommonDivider
 
 @Composable
@@ -68,13 +68,13 @@ fun MedicineItemView(medicine: Medicine,onViewDetailsClicked:((Medicine)->Unit)?
                         text = medicine.type,
                         fontSize = 14.sp,
                         modifier = Modifier.padding(start = 8.dp),
-                        color = CurrentColorPalette.secondary
+                        color = MaterialTheme.colors.secondary
                     )
             }
             if (medicine.strength != null)
                 Text(
                     text = medicine.strength,
-                    color = CurrentColorPalette.secondary, fontSize = 12.sp
+                    color = MaterialTheme.colors.secondary, fontSize = 12.sp
                 )
 
 
@@ -82,7 +82,7 @@ fun MedicineItemView(medicine: Medicine,onViewDetailsClicked:((Medicine)->Unit)?
                 CommonDivider()
                 Text(
                     text = medicine.companyName,
-                    color = CurrentColorPalette.secondaryVariant,
+                    color = MaterialTheme.colors.secondaryVariant,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -92,7 +92,7 @@ fun MedicineItemView(medicine: Medicine,onViewDetailsClicked:((Medicine)->Unit)?
                 Text(
                     text = medicine.genericName,
                     fontStyle = FontStyle.Italic,
-                    color = CurrentColorPalette.secondary
+                    color = MaterialTheme.colors.secondary
                 )
             }
 

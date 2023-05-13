@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.shubhobrataroy.bdmedmate.domain.model.Generic
 import com.shubhobrataroy.bdmedmate.ui.CommonState
-import com.shubhobrataroy.bdmedmate.ui.ui.theme.CurrentColorPalette
 import com.shubhobrataroy.bdmedmate.ui.ui.theme.MedMateTheme
 
 
@@ -77,7 +76,7 @@ fun CommonTitle(title: String) {
     Text(
         text = title,
         fontWeight = FontWeight.Bold,
-        color = CurrentColorPalette.secondary
+        color = MaterialTheme.colors.secondary
     )
 }
 
@@ -97,19 +96,19 @@ fun MedGenericView(
     isGenericMainView: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier){
+    Column(modifier = modifier, verticalArrangement = Arrangement.Center){
         if (!isGenericMainView)
             Text(
                 text = generic.name,
                 fontStyle = FontStyle.Italic,
                 fontWeight = FontWeight.Bold,
-                color = CurrentColorPalette.secondary
+                color = MaterialTheme.colors.secondary
             )
         else
             Text(
                 text = generic.name,
                 style = MaterialTheme.typography.h5,
-                color = CurrentColorPalette.secondary
+                color = MaterialTheme.colors.secondary
             )
         CommonDivider()
         Paragraph(title = "Dosage", generic.dosage)
@@ -141,7 +140,7 @@ fun FancyRadioGroup(
     options: List<String>,
     primaryColor: Color = MaterialTheme.colors.surface,
     previouslySelectedIndex: Int = 0,
-    selectedColor: Color = CurrentColorPalette.primary,
+    selectedColor: Color = MaterialTheme.colors.primary,
     unSelectedColor: Color = primaryColor,
     containerCorners: Dp = 16.dp,
     selectedItemCorner: Dp = 16.dp,
@@ -183,8 +182,8 @@ fun FancyRadioGroup(
                                 .fillMaxWidth(),
                             textAlign = TextAlign.Center,
                             color = if (isSelected)
-                                CurrentColorPalette.onSecondary
-                            else CurrentColorPalette.onSurface,
+                                MaterialTheme.colors.onSecondary
+                            else MaterialTheme.colors.onSurface,
                             maxLines = 1
                         )
                     }

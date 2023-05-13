@@ -3,6 +3,7 @@ package com.shubhobrataroy.bdmedmate.ui.view.composable
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.shubhobrataroy.bdmedmate.domain.model.Company
 import com.shubhobrataroy.bdmedmate.domain.model.Generic
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 import com.shubhobrataroy.bdmedmate.ui.CommonState
@@ -88,6 +90,12 @@ fun DashboardPage(viewModel: MedicineListViewModel = hiltViewModel()) {
                     )
 
                     DashboardBottomSheetState.NoData -> {}
+                    is DashboardBottomSheetState.CompanyState -> CompanyDetailsComposable(
+                        company = (currentBottomSheetState as DashboardBottomSheetState.CompanyState).company,
+                        onMedClicked = {
+                            setState(DashboardBottomSheetState.MedicineState(it))
+                        }, modifier = Modifier.padding(horizontal = 8.dp)
+                    )
                 }
             }
         ) {
@@ -101,6 +109,8 @@ fun DashboardPage(viewModel: MedicineListViewModel = hiltViewModel()) {
                     },
                     onMedicineGenericDetailsRequested = {medGeneric->
                         setState(DashboardBottomSheetState.GenericState(medGeneric))
+                    }, onCompanyDetailsRequested = { company->
+                        setState(DashboardBottomSheetState.CompanyState(company))
                     })
             }
         }
@@ -115,7 +125,8 @@ fun DashboardContent(
     modifier: Modifier = Modifier,
     viewModel: MedicineListViewModel = hiltViewModel(),
     onMedicineDetailsRequested: (Medicine) -> Unit,
-    onMedicineGenericDetailsRequested: (Generic) -> Unit
+    onMedicineGenericDetailsRequested: (Generic) -> Unit,
+    onCompanyDetailsRequested:(Company) -> Unit
 ) {
     val state by viewModel.selectedCategoryItemShowableList.observeAsState(CommonState.Idle)
 
@@ -139,7 +150,7 @@ fun DashboardContent(
 
                 is ShowableListData.CompanyShowableListData -> CompanyListViewComposable(
                     list = it.list,
-                    onItemClicked = {}
+                    onItemClicked = onCompanyDetailsRequested
                 )
             }
         }
@@ -177,8 +188,6 @@ fun SearchHeader(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Text(text = selectedItemText, Modifier.fillMaxWidth())
-
             val searchState by remember {
                 viewModel.searchQueryState
             }
@@ -188,14 +197,15 @@ fun SearchHeader(
                 },
                 label = {
                     Text("Search by $selectedItemText Name")
-                }, modifier = Modifier.fillMaxWidth(.95f)
+                }, modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp)
             )
 
 
-            CommonDivider(16.dp)
+            Spacer(modifier = Modifier.padding(top = 16.dp))
 
             FancyRadioGroup(
-                options = listTypes, containerCorners = 0.dp,
+                options = listTypes,
                 selectedItemCorner = 0.dp
             ) { index, value ->
                 selectedCategory = index

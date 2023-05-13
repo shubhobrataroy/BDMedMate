@@ -30,8 +30,6 @@ private val LightColorPalette = lightColors(
     onSurface = Color.Black,
     */
 )
-var CurrentColorPalette = DarkColorPalette
-
 @Composable
 fun MedMateTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -42,8 +40,6 @@ fun MedMateTheme(
     } else {
         LightColorPalette
     }
-
-    CurrentColorPalette = colors
 
     MaterialTheme(
         colors = colors,

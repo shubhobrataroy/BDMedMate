@@ -30,7 +30,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.shubhobrataroy.bdmedmate.domain.model.Company
 import com.shubhobrataroy.bdmedmate.domain.model.Generic
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
-import com.shubhobrataroy.bdmedmate.ui.ui.theme.CurrentColorPalette
 import com.shubhobrataroy.bdmedmate.ui.view.CommonDivider
 import com.shubhobrataroy.bdmedmate.ui.view.CommonTitle
 import com.shubhobrataroy.bdmedmate.ui.view.MedGenericView
@@ -65,13 +64,13 @@ fun MedicineView(
                             text = medicine.type,
                             fontSize = 14.sp,
                             modifier = Modifier.padding(start = 8.dp),
-                            color = CurrentColorPalette.secondary
+                            color = MaterialTheme.colors.secondary
                         )
                 }
                 if (medicine.strength != null)
                     Text(
                         text = medicine.strength,
-                        color = CurrentColorPalette.secondary, fontSize = 12.sp
+                        color = MaterialTheme.colors.secondary, fontSize = 12.sp
                     )
             }
 
@@ -141,7 +140,7 @@ fun SimilarMedView(currentData: Medicine, onSimilarMedClicked: (Medicine) -> Uni
     Card(
         elevation = 1.dp,
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, CurrentColorPalette.primary),
+        border = BorderStroke(1.dp, MaterialTheme.colors.primary),
         modifier = Modifier
             .padding(horizontal = 4.dp, vertical = 8.dp)
             .width(IntrinsicSize.Max)

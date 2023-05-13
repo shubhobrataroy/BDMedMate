@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,7 +19,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shubhobrataroy.bdmedmate.domain.model.Generic
-import com.shubhobrataroy.bdmedmate.ui.ui.theme.CurrentColorPalette
 import com.shubhobrataroy.bdmedmate.ui.ui.theme.MedMateTheme
 
 
@@ -47,7 +47,7 @@ fun MedicineGenericItemView(generic: Generic, onItemClicked: (generic:Generic ) 
                     horizontal = 8.dp,
                     vertical = 16.dp,
                 ),fontWeight = FontWeight.Bold,
-                color = CurrentColorPalette.secondary
+                color = MaterialTheme.colors.secondary
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
