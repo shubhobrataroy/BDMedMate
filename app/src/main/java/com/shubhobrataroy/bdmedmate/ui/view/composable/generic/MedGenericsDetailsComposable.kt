@@ -31,7 +31,7 @@ fun RelatedMedicines(
         CommonTitle(title = "Medicines")
         if (medicines.isEmpty()) Text(text = "No medicines found")
         else LazyRow {
-            items(medicines ?: return@LazyRow)
+            items(medicines)
             {
                 SimilarMedView(currentData = it, onMedicineClick)
             }

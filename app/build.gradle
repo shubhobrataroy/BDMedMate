@@ -19,8 +19,8 @@ android {
         applicationId "com.shubhobrataroy.bdmedmate"
         minSdk 21
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -28,8 +28,17 @@ android {
         }
     }
 
+
     buildTypes {
+        applicationVariants.all { variant ->
+            variant.outputs.all { output->
+                outputFileName = "BD Medmate-${variant.versionName}-${variant.flavorName}.apk"
+            }
+        }
+
         release {
+
+
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
