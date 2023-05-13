@@ -35,6 +35,12 @@ import com.shubhobrataroy.bdmedmate.ui.ShowableListData
 import com.shubhobrataroy.bdmedmate.ui.ui.theme.MedMateTheme
 import com.shubhobrataroy.bdmedmate.ui.view.CommonDivider
 import com.shubhobrataroy.bdmedmate.ui.view.FancyRadioGroup
+import com.shubhobrataroy.bdmedmate.ui.view.composable.company.CompanyDetailsComposable
+import com.shubhobrataroy.bdmedmate.ui.view.composable.company.CompanyListViewComposable
+import com.shubhobrataroy.bdmedmate.ui.view.composable.generic.MedGenericsDetailsComposable
+import com.shubhobrataroy.bdmedmate.ui.view.composable.generic.MedicineGenericListView
+import com.shubhobrataroy.bdmedmate.ui.view.composable.medicine.MedicineDetailsComposable
+import com.shubhobrataroy.bdmedmate.ui.view.composable.medicine.MedicineListView
 import com.shubhobrataroy.bdmedmate.ui.view.model.DashboardBottomSheetState
 import com.shubhobrataroy.bdmedmate.ui.view.toComposable
 import com.shubhobrataroy.bdmedmate.ui.viewmodel.MedicineListViewModel
@@ -63,38 +69,43 @@ fun DashboardPage(viewModel: MedicineListViewModel = hiltViewModel()) {
         fun setState(state: DashboardBottomSheetState) {
             currentBottomSheetState = state
             coroutineScope.launch {
-                if(state is DashboardBottomSheetState.NoData && sheetState.isVisible)
+                if (state is DashboardBottomSheetState.NoData && sheetState.isVisible)
                     sheetState.hide()
-
                 else if (sheetState.isVisible.not()) {
                     sheetState.show()
                 }
             }
         }
 
+        val medCallback: (Medicine) -> Unit = {
+            setState(DashboardBottomSheetState.MedicineState(it))
+        }
+
+        val companyCallback: (Company) -> Unit = {
+            setState(DashboardBottomSheetState.CompanyState(it))
+        }
+
+
+
         ModalBottomSheetLayout(
             sheetState = sheetState,
             sheetContent = {
                 when (currentBottomSheetState) {
                     is DashboardBottomSheetState.GenericState -> MedGenericsDetailsComposable(
-                        generic = (currentBottomSheetState as DashboardBottomSheetState.GenericState).medicineGeneric
-                    ) {
-                        setState(DashboardBottomSheetState.MedicineState(it))
-                    }
+                        generic = (currentBottomSheetState as DashboardBottomSheetState.GenericState).medicineGeneric,
+                        medCallback
+                    )
 
                     is DashboardBottomSheetState.MedicineState -> MedicineDetailsComposable(
                         medicineEntity = (currentBottomSheetState as DashboardBottomSheetState.MedicineState).medicine,
-                        onSimilarMedicineClick = {
-                            setState(DashboardBottomSheetState.MedicineState(it))
-                        }
+                        companyCallback,
+                        medCallback
                     )
 
                     DashboardBottomSheetState.NoData -> {}
                     is DashboardBottomSheetState.CompanyState -> CompanyDetailsComposable(
                         company = (currentBottomSheetState as DashboardBottomSheetState.CompanyState).company,
-                        onMedClicked = {
-                            setState(DashboardBottomSheetState.MedicineState(it))
-                        }, modifier = Modifier.padding(horizontal = 8.dp)
+                        onMedClicked = medCallback, modifier = Modifier.padding(horizontal = 8.dp)
                     )
                 }
             }
@@ -103,13 +114,13 @@ fun DashboardPage(viewModel: MedicineListViewModel = hiltViewModel()) {
                 DashboardContent(
                     modifier = Modifier.padding(it),
                     viewModel = viewModel,
-                    onMedicineDetailsRequested = { med->
-                        Log.d("MedDetails",med.toString())
+                    onMedicineDetailsRequested = { med ->
+                        Log.d("MedDetails", med.toString())
                         setState(DashboardBottomSheetState.MedicineState(med))
                     },
-                    onMedicineGenericDetailsRequested = {medGeneric->
+                    onMedicineGenericDetailsRequested = { medGeneric ->
                         setState(DashboardBottomSheetState.GenericState(medGeneric))
-                    }, onCompanyDetailsRequested = { company->
+                    }, onCompanyDetailsRequested = { company ->
                         setState(DashboardBottomSheetState.CompanyState(company))
                     })
             }
@@ -126,7 +137,7 @@ fun DashboardContent(
     viewModel: MedicineListViewModel = hiltViewModel(),
     onMedicineDetailsRequested: (Medicine) -> Unit,
     onMedicineGenericDetailsRequested: (Generic) -> Unit,
-    onCompanyDetailsRequested:(Company) -> Unit
+    onCompanyDetailsRequested: (Company) -> Unit
 ) {
     val state by viewModel.selectedCategoryItemShowableList.observeAsState(CommonState.Idle)
 
@@ -213,7 +224,7 @@ fun SearchHeader(
             }
             CommonDivider(verticalSpace = 16.dp)
 
-            FancyRadioGroup(options =  arrayListOf("A to Z", "Z to A")) { index, value ->
+            FancyRadioGroup(options = arrayListOf("A to Z", "Z to A")) { index, value ->
                 viewModel.onListOrderSelected(index)
             }
         }

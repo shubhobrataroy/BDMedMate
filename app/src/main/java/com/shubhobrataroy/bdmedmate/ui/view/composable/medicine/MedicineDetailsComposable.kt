@@ -1,4 +1,4 @@
-package com.shubhobrataroy.bdmedmate.ui.view.composable
+package com.shubhobrataroy.bdmedmate.ui.view.composable.medicine
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -23,22 +23,22 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.shubhobrataroy.bdmedmate.domain.model.Company
 import com.shubhobrataroy.bdmedmate.domain.model.Generic
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 import com.shubhobrataroy.bdmedmate.ui.view.CommonDivider
 import com.shubhobrataroy.bdmedmate.ui.view.CommonTitle
 import com.shubhobrataroy.bdmedmate.ui.view.MedGenericView
-import com.shubhobrataroy.bdmedmate.ui.viewmodel.MedicineListViewModel
 
 @Composable
 fun MedicineView(
     medicine: Medicine,
-    viewModel: MedicineListViewModel = hiltViewModel(),
+    onCompanyDetailsRequested : (Company) ->Unit,
     onSimilarMedicineClick: (Medicine) -> Unit
 ) {
 
@@ -75,12 +75,13 @@ fun MedicineView(
             }
 
             item {
-                val genericData :Generic? =medicine.generic?.collectAsState(initial = null)?.value
-                val companyDetails =medicine.companyDetails?.collectAsState(initial = null)?.value
+                val genericData: Generic? = medicine.generic?.collectAsState(initial = null)?.value
+                val companyDetails = medicine.companyDetails?.collectAsState(initial = null)?.value
 
                 ItemExtraData(
                     genericData,
-                    companyDetails
+                    companyDetails,
+                    onCompanyDetailsRequested
                 )
             }
 
@@ -89,9 +90,9 @@ fun MedicineView(
             item {
                 CommonTitle(title = "Similar Medicines")
 
-                if (medicine.similarMedicines==null) return@item Text(text = "No similar medicines found")
+                if (medicine.similarMedicines == null) return@item Text(text = "No similar medicines found")
 
-                val similarMeds by remember{medicine.similarMedicines}.collectAsState(initial = emptyList())
+                val similarMeds by remember { medicine.similarMedicines }.collectAsState(initial = emptyList())
 
                 LazyRow {
                     items(similarMeds)
@@ -111,14 +112,20 @@ fun MedicineView(
 @Composable
 fun ItemExtraData(
     genericsEntity: Generic?,
-    company: Company?
+    company: Company?,
+    onCompanyDetailsRequested: (Company) -> Unit
 ) {
 
     Column {
         CommonDivider()
 
         if (company != null)
-            Text(text = company.name)
+            Text(
+                text = company.name,
+                style = TextStyle(textDecoration = TextDecoration.Underline),
+                modifier = Modifier.clickable {
+                    onCompanyDetailsRequested(company)
+                })
 
         if (genericsEntity != null)
             MedGenericView(generic = genericsEntity)
@@ -131,8 +138,6 @@ fun ItemExtraData(
 
     }
 }
-
-
 
 
 @Composable
@@ -161,10 +166,10 @@ fun SimilarMedView(currentData: Medicine, onSimilarMedClicked: (Medicine) -> Uni
 @Composable
 fun MedicineDetailsComposable(
     medicineEntity: Medicine,
-    viewModel: MedicineListViewModel = hiltViewModel(),
+    onCompanyDetailsRequested : (Company) ->Unit,
     onSimilarMedicineClick: (Medicine) -> Unit
 ) {
     Card(shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)) {
-        MedicineView(medicineEntity, viewModel, onSimilarMedicineClick)
+        MedicineView(medicineEntity,onCompanyDetailsRequested, onSimilarMedicineClick)
     }
 }

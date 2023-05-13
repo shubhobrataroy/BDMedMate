@@ -1,4 +1,4 @@
-package com.shubhobrataroy.bdmedmate.ui.view.composable
+package com.shubhobrataroy.bdmedmate.ui.view.composable.medicine
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable

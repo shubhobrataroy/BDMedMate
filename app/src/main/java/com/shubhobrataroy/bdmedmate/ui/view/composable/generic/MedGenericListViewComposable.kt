@@ -1,4 +1,4 @@
-package com.shubhobrataroy.bdmedmate.ui.view.composable
+package com.shubhobrataroy.bdmedmate.ui.view.composable.generic
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column

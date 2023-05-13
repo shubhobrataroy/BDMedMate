@@ -1,4 +1,4 @@
-package com.shubhobrataroy.bdmedmate.ui.view.composable
+package com.shubhobrataroy.bdmedmate.ui.view.composable.generic
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -18,6 +18,7 @@ import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 import com.shubhobrataroy.bdmedmate.ui.ui.theme.MedMateTheme
 import com.shubhobrataroy.bdmedmate.ui.view.CommonTitle
 import com.shubhobrataroy.bdmedmate.ui.view.MedGenericView
+import com.shubhobrataroy.bdmedmate.ui.view.composable.medicine.SimilarMedView
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
