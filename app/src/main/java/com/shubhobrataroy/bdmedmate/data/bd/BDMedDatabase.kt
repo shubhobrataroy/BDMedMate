@@ -72,8 +72,22 @@ abstract class BDMedDatabase : RoomDatabase(), MedDataSource {
         return dao.getAllMedGenericsData(query = query).map { it.toMedGeneric() }
     }
 
-    override suspend fun getAllCompany(): List<Company> {
-        return dao.getAllCompanyData().map { it.toCompany() }
+    override suspend fun getAllCompany(searchQuery: String, byNameAsc: Boolean): List<Company> {
+        val orderLogic = buildString {
+            append("company_name ")
+            append(if (byNameAsc) "asc" else "desc")
+        }
+
+        val whereLogic = buildString {
+            append("company_name like '%$searchQuery%'")
+        }
+
+        val query =
+            SimpleSQLiteQuery("select * from company_name where $whereLogic order by $orderLogic")
+
+
+
+        return dao.getAllCompanyDataByCustomQuery(query).map { it.toCompany() }
     }
 
     private fun MedicineDetailed.toMedicine() = medicine.toMedicine(genericsEntity, companyEntity)
@@ -85,10 +99,12 @@ abstract class BDMedDatabase : RoomDatabase(), MedDataSource {
         return Medicine(brandName ?: "", form, strength,
             genericName = genericsEntity?.genericName,
             companyName = companyEntity?.companyName,
-            generic = genericId?.let { genericId->dao.getGenericById(genericId).map{
-                it?.toMedGeneric()
-            } },
-            companyDetails = companyId?.let { companyId->
+            generic = genericId?.let { genericId ->
+                dao.getGenericById(genericId).map {
+                    it?.toMedGeneric()
+                }
+            },
+            companyDetails = companyId?.let { companyId ->
                 dao.getCompanyDetailsByCompanyId(companyId).map { it.toCompany() }
             },
             similarMedicines = genericId?.run {
@@ -115,6 +131,8 @@ abstract class BDMedDatabase : RoomDatabase(), MedDataSource {
     }
 
     private fun CompanyEntity.toCompany() = Company(
-        this.companyName ?: ""
-    ) { dao.getMedicinesCompanyId(companyId).map { it.toMedicine() } }
+        this.companyName ?: "",
+        dao.getMedicinesCompanyId(companyId)
+            .map { it.map { medicineEntity -> medicineEntity.toMedicine() } }
+    )
 }

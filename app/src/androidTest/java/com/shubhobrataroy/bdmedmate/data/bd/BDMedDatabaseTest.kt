@@ -2,7 +2,6 @@ package com.shubhobrataroy.bdmedmate.data.bd
 
 import android.app.Application
 import android.util.Log
-import androidx.compose.runtime.Composable
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -53,10 +52,11 @@ class BDMedDatabaseTest : TestCase("BDDataSourceTest") {
     fun testGetAllCompany() {
 
         runBlocking {
-            db.getAllCompany().let {
+            db.getAllCompany("", true).let {
                 assert(it.isNotEmpty()) {
                     commonEmptyListMsg
                 }
+                Log.d("testGetAllCompany",it.joinToString(","))
             }
         }
     }
@@ -71,7 +71,7 @@ class BDMedDatabaseTest : TestCase("BDDataSourceTest") {
             db.getAllMedicines().forEachIndexed { index, it ->
 
 
-                if (it.companyDetails() != null) {
+                if (it.companyDetails?.firstOrNull() != null) {
                     Log.d(
                         name, "Missing company Details.\n" +
                                 "Index:$index\nMedicine:$it"
@@ -82,7 +82,7 @@ class BDMedDatabaseTest : TestCase("BDDataSourceTest") {
                     Log.d(name, "Missing Similar Medicines.\nIndex:$index\nMedicine:$it")
                     missingSimilarMedForMeds.add(it.name)
                 }
-                if (it.genericFetcher() != null) {
+                if (it.generic?.firstOrNull() != null) {
                     Log.d(
                         name, "Missing Generics Details.\n" +
                                 "Index:$index\nMedicine:$it"

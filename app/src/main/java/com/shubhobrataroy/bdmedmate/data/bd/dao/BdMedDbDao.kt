@@ -36,6 +36,10 @@ interface BdMedDbDao {
     @Query("select * from company_name")
     fun getAllCompanyData(): List<CompanyEntity>
 
+    @RawQuery
+    fun getAllCompanyDataByCustomQuery(query: SupportSQLiteQuery): List<CompanyEntity>
+
+
     @Query("select * from indication")
     fun getAllIndications(): List<IndicationsEntity>
 
@@ -50,7 +54,7 @@ interface BdMedDbDao {
     fun getMedsByGenerics(genericId: String): Flow<List<MedicineEntity>>
 
     @Query("select * from BRAND where company_id = :companyId")
-    fun getMedicinesCompanyId(companyId: String): List<MedicineEntity>
+    fun getMedicinesCompanyId(companyId: String): Flow<List<MedicineEntity>>
 
     @Query("select * from COMPANY_NAME where company_id = :companyId")
     fun getCompanyDetailsByCompanyId(companyId: String): Flow<CompanyEntity>

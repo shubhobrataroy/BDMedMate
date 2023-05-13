@@ -77,7 +77,7 @@ class BDDatabaseTester {
             val generics = db.getBDMedDao().getGenericById("1")
             assert(generics != null) { "Generic Not found" }
             Log.d("GenMeds","Generics $generics")
-            val meds = db.getBDMedDao().getSimilarMedicine(generics?.genericId ?: "").firstOrNull()
+            val meds = db.getBDMedDao().getSimilarMedicine(generics.firstOrNull()?.genericId ?: "").firstOrNull()
             Log.d("GenMeds",meds.toString())
             assert(meds.isNullOrEmpty().not())
         }

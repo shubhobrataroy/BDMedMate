@@ -11,6 +11,7 @@ import com.shubhobrataroy.bdmedmate.domain.model.Generic
 import com.shubhobrataroy.bdmedmate.domain.model.Medicine
 import com.shubhobrataroy.bdmedmate.ui.CommonState
 import com.shubhobrataroy.bdmedmate.ui.ShowableListData
+import com.shubhobrataroy.bdmedmate.ui.viewmodel.showableListHandler.CompanyListHandler
 import com.shubhobrataroy.bdmedmate.ui.viewmodel.showableListHandler.GenericListHandler
 import com.shubhobrataroy.bdmedmate.ui.viewmodel.showableListHandler.MedicineListHandler
 import com.shubhobrataroy.bdmedmate.ui.viewmodel.showableListHandler.ShowableListHandler
@@ -34,7 +35,7 @@ class MedicineListViewModel @Inject constructor(
         arrayListOf(
             MedicineListHandler(repository, country),
             GenericListHandler(repository, country, ),
-            MedicineListHandler(repository, country, ),
+            CompanyListHandler(repository, country, ),
         )
     }
 
@@ -56,9 +57,6 @@ class MedicineListViewModel @Inject constructor(
 
 
 
-    fun getGenericsAndCompanyDetails(medicine: Medicine) = flow<Pair<Generic?,Company?>> {
-        medicine.generic?.firstOrNull() to medicine.companyDetails?.firstOrNull()
-    }
 
     fun onListOrderSelected(index: Int) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -86,9 +84,8 @@ class MedicineListViewModel @Inject constructor(
 
         _selectedCategoryItemList.execCatching {
             currentlySelectedOption.doIntelligentSearch(
-                searchQuery = searchQuery,
-                _selectedCategoryItemList.value
-            ) ?: currentlySelectedOption.getAllShowableLists()
+                searchQuery = searchQuery,_selectedCategoryItemList.value
+            )
         }
 
         val latestQuery = this.searchQueryState.value

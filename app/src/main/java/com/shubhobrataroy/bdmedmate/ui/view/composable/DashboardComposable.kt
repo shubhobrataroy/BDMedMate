@@ -136,6 +136,11 @@ fun DashboardContent(
                     medicineListState = it.list,
                     onItemClick = onMedicineDetailsRequested
                 )
+
+                is ShowableListData.CompanyShowableListData -> CompanyListViewComposable(
+                    list = it.list,
+                    onItemClicked = {}
+                )
             }
         }
     }
